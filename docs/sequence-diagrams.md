@@ -1,320 +1,548 @@
-# Sequence Diagrams
+# Sequence Diagrams - Distributed Systems Interactions
 
-## 1. User Login and Initialization
+## Academic Overview
+
+This document presents sequence diagrams illustrating the temporal interactions between distributed system components in the P2P chat application. These diagrams demonstrate key distributed systems concepts including asynchronous communication, message passing, consensus protocols, and failure recovery.
+
+---
+
+## Diagram 1: System Initialization (Distributed Bootstrapping)
+
+### Concept: Service Discovery and Registration
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant UI
-    participant ChatCoordinator
-    participant MQTTService
-    participant ContactRepo
-    participant Broker as MQTT Broker
+    participant LocalNode as Local Peer Node
+    participant MQTT as MQTT Broker<br/>(Discovery Service)
+    participant Storage as Local Storage<br/>(IndexedDB)
     
-    User->>UI: Enter User ID
-    UI->>ChatCoordinator: initialize()
-    ChatCoordinator->>MQTTService: connect()
-    MQTTService->>Broker: CONNECT
-    Broker-->>MQTTService: CONNACK
-    MQTTService->>Broker: SUBSCRIBE user/{userId}
-    Broker-->>MQTTService: SUBACK
-    MQTTService-->>ChatCoordinator: Connected
-    ChatCoordinator->>ContactRepo: getAll()
-    ContactRepo-->>ChatCoordinator: Contact List
-    ChatCoordinator-->>UI: Initialization Complete
-    UI-->>User: Show Contact List
+    Note over User,Storage: Distributed System Bootstrapping
+    
+    User->>LocalNode: Initialize (userId)
+    
+    rect rgb(255, 249, 196)
+        Note over LocalNode,MQTT: Phase 1: Connect to Discovery Service
+        LocalNode->>MQTT: CONNECT (clientId: userId)
+        MQTT-->>LocalNode: CONNACK (session present)
+        LocalNode->>MQTT: SUBSCRIBE user/{userId}/*
+        MQTT-->>LocalNode: SUBACK
+    end
+    
+    rect rgb(227, 242, 253)
+        Note over LocalNode,Storage: Phase 2: Load Local State
+        LocalNode->>Storage: Load contacts
+        Storage-->>LocalNode: Contact list
+        LocalNode->>Storage: Load message history
+        Storage-->>LocalNode: Messages
+    end
+    
+    rect rgb(200, 230, 201)
+        Note over LocalNode: Phase 3: Ready State
+        LocalNode-->>User: System Ready
+    end
+    
+    Note right of LocalNode: Distributed Systems Concepts:<br/>• Asynchronous initialization<br/>• Decoupled service discovery<br/>• Local-first architecture
 ```
 
-## 2. Add Contact Flow
+**Distributed Systems Principles**:
+- **Asynchronous Operations**: Non-blocking initialization
+- **Service Registration**: MQTT topic subscription for discovery
+- **Local State**: Each node maintains independent state
+- **No Coordination**: Peers initialize independently
+
+---
+
+## Diagram 2: Peer Discovery and Contact Addition
+
+### Concept: Distributed Peer Discovery via Publish-Subscribe
 
 ```mermaid
 sequenceDiagram
     participant UserA
-    participant UI_A as UI (User A)
-    participant Coord_A as ChatCoordinator A
-    participant Contact_A as ContactService A
-    participant MQTT_A as MQTTService A
-    participant Broker as MQTT Broker
-    participant MQTT_B as MQTTService B
-    participant Coord_B as ChatCoordinator B
-    participant UI_B as UI (User B)
+    participant PeerA as Peer A Node
+    participant Broker as MQTT Broker<br/>(Message Router)
+    participant PeerB as Peer B Node
     participant UserB
     
-    UserA->>UI_A: Click "Add Contact"
-    UI_A->>UserA: Show Contact Dialog
-    UserA->>UI_A: Enter Peer ID & Name
-    UI_A->>Coord_A: addContact(peerId, name)
-    Coord_A->>Contact_A: addContact(peerId, name)
-    Contact_A->>Contact_A: Create pending contact
-    Contact_A->>MQTT_A: sendContactRequest(peerId, name)
-    MQTT_A->>Broker: PUBLISH user/{peerId}/contactRequest
-    Broker->>MQTT_B: FORWARD contactRequest
-    MQTT_B->>Coord_B: onSignalingMessage(contactRequest)
-    Coord_B->>UI_B: onContactRequest(from, name)
-    UI_B-->>UserB: Show Contact Request
+    Note over UserA,UserB: Distributed Peer Discovery
     
-    Note over UserB: User B decides to accept/decline
+    rect rgb(255, 249, 196)
+        Note over UserA,PeerA: Initiator Side
+        UserA->>PeerA: Add contact (peerB_id, name)
+        PeerA->>PeerA: Create contact request message
+        PeerA->>Broker: PUBLISH user/peerB/contactRequest
+    end
+    
+    rect rgb(255, 224, 178)
+        Note over Broker: Message Routing (O(1) lookup)
+        Broker->>Broker: Route to subscribers
+    end
+    
+    rect rgb(227, 242, 253)
+        Note over PeerB,UserB: Receiver Side
+        Broker->>PeerB: FORWARD contactRequest
+        PeerB->>PeerB: Validate message
+        PeerB->>PeerB: Store pending request
+        PeerB-->>UserB: Show contact request dialog
+    end
+    
+    Note right of Broker: Distributed Systems Concepts:<br/>• Publish-subscribe decoupling<br/>• Asynchronous messaging<br/>• No direct peer addressing<br/>• Broker-mediated discovery
 ```
 
-## 3. Accept Contact and Establish Connection
+**Distributed Systems Principles**:
+- **Loose Coupling**: Peers don't need direct addresses
+- **Publish-Subscribe**: Broker routes messages to subscribers
+- **Asynchronous**: Fire-and-forget messaging
+- **Scalability**: O(1) routing complexity
+
+---
+
+## Diagram 3: WebRTC Connection Establishment (Distributed Consensus)
+
+### Concept: SDP Offer/Answer Exchange and ICE Negotiation
 
 ```mermaid
 sequenceDiagram
-    participant UserB
-    participant UI_B as UI (User B)
-    participant Coord_B as ChatCoordinator B
-    participant Contact_B as ContactService B
-    participant MQTT_B as MQTTService B
+    participant PeerA as Peer A<br/>(Initiator)
+    participant SignalA as Signaling<br/>(MQTT)
     participant Broker as MQTT Broker
-    participant MQTT_A as MQTTService A
-    participant Coord_A as ChatCoordinator A
-    participant ConnMgr_A as ConnectionManager A
-    participant WebRTC_A as WebRTCService A
-    participant WebRTC_B as WebRTCService B
+    participant SignalB as Signaling<br/>(MQTT)
+    participant PeerB as Peer B<br/>(Responder)
     
-    UserB->>UI_B: Click "Accept"
-    UI_B->>Coord_B: acceptContact(peerId, name)
-    Coord_B->>Contact_B: acceptContact(peerId, name)
-    Contact_B->>MQTT_B: sendContactResponse(accepted=true)
-    MQTT_B->>Broker: PUBLISH user/{peerA}/contactResponse
-    Broker->>MQTT_A: FORWARD contactResponse
-    MQTT_A->>Coord_A: onSignalingMessage(contactResponse)
-    Coord_A->>UI_B: onContactResponse(accepted=true)
+    Note over PeerA,PeerB: Distributed Connection Negotiation
     
-    Note over Coord_A,Coord_B: Both users now have each other as contacts
+    rect rgb(255, 249, 196)
+        Note over PeerA,SignalA: Phase 1: Offer Creation
+        PeerA->>PeerA: createOffer() → SDP
+        PeerA->>PeerA: setLocalDescription(offer)
+        PeerA->>SignalA: Send offer
+        SignalA->>Broker: PUBLISH user/peerB/offer
+    end
     
-    Coord_A->>ConnMgr_A: connectToPeer(peerB)
-    ConnMgr_A->>WebRTC_A: createOffer()
-    WebRTC_A-->>ConnMgr_A: SDP Offer
-    ConnMgr_A->>MQTT_A: sendSignalingMessage(offer)
-    MQTT_A->>Broker: PUBLISH user/{peerB}/offer
-    Broker->>MQTT_B: FORWARD offer
-    MQTT_B->>Coord_B: onSignalingMessage(offer)
-    Coord_B->>WebRTC_B: setRemoteDescription(offer)
-    Coord_B->>WebRTC_B: createAnswer()
-    WebRTC_B-->>Coord_B: SDP Answer
-    Coord_B->>MQTT_B: sendSignalingMessage(answer)
-    MQTT_B->>Broker: PUBLISH user/{peerA}/answer
-    Broker->>MQTT_A: FORWARD answer
-    MQTT_A->>Coord_A: onSignalingMessage(answer)
-    Coord_A->>WebRTC_A: setRemoteDescription(answer)
+    rect rgb(255, 224, 178)
+        Note over Broker: Reliable Message Delivery (QoS 1)
+        Broker->>SignalB: FORWARD offer (with ACK)
+    end
     
-    Note over WebRTC_A,WebRTC_B: ICE Candidate Exchange
+    rect rgb(227, 242, 253)
+        Note over SignalB,PeerB: Phase 2: Answer Creation
+        SignalB->>PeerB: Deliver offer
+        PeerB->>PeerB: setRemoteDescription(offer)
+        PeerB->>PeerB: createAnswer() → SDP
+        PeerB->>PeerB: setLocalDescription(answer)
+        PeerB->>SignalB: Send answer
+        SignalB->>Broker: PUBLISH user/peerA/answer
+    end
     
-    WebRTC_A->>WebRTC_A: Generate ICE Candidates
-    WebRTC_A->>MQTT_A: sendSignalingMessage(iceCandidate)
-    MQTT_A->>Broker: PUBLISH user/{peerB}/iceCandidate
-    Broker->>MQTT_B: FORWARD iceCandidate
-    MQTT_B->>WebRTC_B: addIceCandidate()
+    rect rgb(200, 230, 201)
+        Note over Broker,PeerA: Phase 3: Answer Delivery
+        Broker->>SignalA: FORWARD answer
+        SignalA->>PeerA: Deliver answer
+        PeerA->>PeerA: setRemoteDescription(answer)
+    end
     
-    WebRTC_B->>WebRTC_B: Generate ICE Candidates
-    WebRTC_B->>MQTT_B: sendSignalingMessage(iceCandidate)
-    MQTT_B->>Broker: PUBLISH user/{peerA}/iceCandidate
-    Broker->>MQTT_A: FORWARD iceCandidate
-    MQTT_A->>WebRTC_A: addIceCandidate()
+    rect rgb(255, 249, 196)
+        Note over PeerA,PeerB: Phase 4: ICE Candidate Exchange
+        
+        par ICE Gathering (Parallel)
+            PeerA->>PeerA: Gather ICE candidates
+            PeerA->>Broker: PUBLISH candidates
+            Broker->>PeerB: FORWARD candidates
+            PeerB->>PeerB: addIceCandidate()
+        and
+            PeerB->>PeerB: Gather ICE candidates
+            PeerB->>Broker: PUBLISH candidates
+            Broker->>PeerA: FORWARD candidates
+            PeerA->>PeerA: addIceCandidate()
+        end
+    end
     
-    Note over WebRTC_A,WebRTC_B: WebRTC Connection Established
+    rect rgb(200, 230, 201)
+        Note over PeerA,PeerB: Phase 5: Direct P2P Connection
+        PeerA<->>PeerB: WebRTC Connection Established
+        Note over PeerA,PeerB: Signaling complete,<br/>data flows peer-to-peer
+    end
     
-    WebRTC_A-->>ConnMgr_A: onConnectionStateChange(connected)
-    ConnMgr_A-->>UI_B: Update Status: Connected
-    WebRTC_B-->>Coord_B: onConnectionStateChange(connected)
-    Coord_B-->>UI_B: Update Status: Connected
+    Note right of PeerB: Distributed Systems Concepts:<br/>• Two-phase commit (offer/answer)<br/>• Reliable signaling (MQTT QoS 1)<br/>• Parallel ICE gathering<br/>• NAT traversal (STUN/TURN)
 ```
 
-## 4. Send Message Flow
+**Distributed Systems Principles**:
+- **Two-Phase Protocol**: Offer/answer handshake
+- **Reliable Messaging**: QoS 1 guarantees delivery
+- **Concurrent Operations**: Parallel ICE gathering
+- **Network Transparency**: NAT traversal abstraction
+
+---
+
+## Diagram 4: Message Transmission (P2P Data Transfer)
+
+### Concept: Direct Peer-to-Peer Communication
 
 ```mermaid
 sequenceDiagram
     participant UserA
-    participant UI_A as UI (User A)
-    participant Coord_A as ChatCoordinator A
-    participant Msg_A as MessagingService A
-    participant WebRTC_A as WebRTCService A
-    participant DataChannel as WebRTC Data Channel
-    participant WebRTC_B as WebRTCService B
-    participant Coord_B as ChatCoordinator B
-    participant MsgRepo_B as MessageRepository B
-    participant UI_B as UI (User B)
+    participant NodeA as Peer A Node
+    participant StorageA as Local DB A
+    participant DataChannel as WebRTC<br/>Data Channel
+    participant StorageB as Local DB B
+    participant NodeB as Peer B Node
     participant UserB
     
-    UserA->>UI_A: Type message
-    UserA->>UI_A: Click Send
-    UI_A->>Coord_A: sendMessage(content)
-    Coord_A->>Msg_A: sendMessage(content)
-    Msg_A->>Msg_A: Create Message object
-    Msg_A->>Msg_A: Save to local DB (status: sending)
-    Msg_A->>WebRTC_A: sendMessage(content)
-    WebRTC_A->>DataChannel: Send via data channel
-    DataChannel->>WebRTC_B: Receive data
-    WebRTC_B->>Coord_B: onMessage(content)
-    Coord_B->>MsgRepo_B: saveMessage(message)
-    MsgRepo_B-->>Coord_B: Saved
-    Coord_B->>UI_B: onMessageReceived(message)
-    UI_B-->>UserB: Display message
+    Note over UserA,UserB: Distributed Message Delivery
     
-    Note over Msg_A: Update status to 'delivered'
-    Msg_A->>Msg_A: Update message status
-    Msg_A->>UI_A: Update UI
+    rect rgb(255, 249, 196)
+        Note over UserA,StorageA: Phase 1: Local Processing (Peer A)
+        UserA->>NodeA: Send message "Hello"
+        NodeA->>NodeA: Create message object<br/>(id, timestamp, content)
+        NodeA->>StorageA: Save (status: pending)
+        StorageA-->>NodeA: Persisted
+        NodeA-->>UserA: Show message (sending...)
+    end
+    
+    rect rgb(255, 224, 178)
+        Note over NodeA,DataChannel: Phase 2: P2P Transmission
+        NodeA->>DataChannel: Send via DTLS/SCTP
+        Note over DataChannel: Direct P2P<br/>No broker involved<br/>Low latency (~10-50ms)
+    end
+    
+    rect rgb(227, 242, 253)
+        Note over DataChannel,UserB: Phase 3: Remote Processing (Peer B)
+        DataChannel->>NodeB: Receive message
+        NodeB->>NodeB: Validate & deserialize
+        NodeB->>StorageB: Save message
+        StorageB-->>NodeB: Persisted
+        NodeB-->>UserB: Display "Hello"
+    end
+    
+    rect rgb(200, 230, 201)
+        Note over NodeB,UserA: Phase 4: Acknowledgment
+        NodeB->>DataChannel: Send ACK
+        DataChannel->>NodeA: Deliver ACK
+        NodeA->>StorageA: Update status: delivered
+        NodeA-->>UserA: Show checkmark
+    end
+    
+    Note right of DataChannel: Distributed Systems Concepts:<br/>• Peer-to-peer (no intermediary)<br/>• Eventually consistent storage<br/>• Asynchronous acknowledgment<br/>• Local-first architecture
 ```
 
-## 5. Connection Failure and Reconnection
+**Distributed Systems Principles**:
+- **Direct Communication**: Bypasses central server
+- **Local-First**: Save locally before transmission
+- **Eventually Consistent**: Both databases converge
+- **Asynchronous ACK**: Non-blocking confirmation
+
+---
+
+## Diagram 5: Failure Detection and Recovery
+
+### Concept: Fault Tolerance with Exponential Backoff
 
 ```mermaid
 sequenceDiagram
-    participant ConnMgr as ConnectionManager
-    participant WebRTC as WebRTCService
-    participant MQTT as MQTTService
-    participant ReconnMgr as ReconnectionManager
-    participant UI
+    participant Node as Peer Node
+    participant WebRTC as WebRTC Connection
+    participant Retry as Retry Manager
+    participant MQTT as MQTT Signaling
+    participant UI as User Interface
     
-    Note over WebRTC: Connection drops
+    Note over Node,UI: Distributed Failure Handling
     
-    WebRTC->>ConnMgr: onConnectionStateChange(failed)
-    ConnMgr->>ConnMgr: handleConnectionFailed()
-    ConnMgr->>UI: Update status: Reconnecting
-    ConnMgr->>ReconnMgr: start(connectFn)
+    rect rgb(255, 205, 210)
+        Note over WebRTC: Network Failure Occurs
+        WebRTC->>Node: onConnectionStateChange(failed)
+        Node->>Node: Detect failure
+        Node->>UI: Update status: Reconnecting
+    end
     
-    loop Retry with exponential backoff
-        ReconnMgr->>ReconnMgr: Wait (delay)
-        ReconnMgr->>ConnMgr: Attempt #{attempt}
-        ConnMgr->>MQTT: Check MQTT connection
+    rect rgb(255, 249, 196)
+        Note over Node,Retry: Exponential Backoff Algorithm
+        Node->>Retry: Start retry sequence
         
-        alt MQTT disconnected
-            ConnMgr->>MQTT: reconnect()
-            MQTT->>MQTT: connect()
-        end
-        
-        ConnMgr->>WebRTC: close()
-        ConnMgr->>WebRTC: createOffer()
-        WebRTC-->>ConnMgr: SDP Offer
-        ConnMgr->>MQTT: sendSignalingMessage(offer)
-        
-        alt Connection successful
-            WebRTC->>ConnMgr: onConnectionStateChange(connected)
-            ConnMgr->>ReconnMgr: stop()
-            ConnMgr->>UI: Update status: Connected
-        else Connection failed
-            ReconnMgr->>ReconnMgr: Increase delay
+        loop Retry Attempts (max 5)
+            Retry->>Retry: Calculate delay: 2^attempt seconds
+            Note over Retry: Attempt 1: wait 1s
+            Retry->>Node: Attempt reconnection
+            
+            alt MQTT Disconnected
+                Node->>MQTT: Reconnect MQTT first
+                MQTT-->>Node: MQTT connected
+            end
+            
+            Node->>WebRTC: Close old connection
+            Node->>WebRTC: Create new offer
+            WebRTC-->>Node: New SDP offer
+            Node->>MQTT: Send offer via signaling
+            
+            alt Connection Successful
+                WebRTC->>Node: Connection established
+                Node->>Retry: Stop retries
+                Node->>UI: Update status: Connected
+            else Connection Failed
+                Note over Retry: Attempt 2: wait 2s
+                Note over Retry: Attempt 3: wait 4s
+                Note over Retry: Attempt 4: wait 8s
+                Note over Retry: Attempt 5: wait 16s
+            end
         end
     end
     
-    alt Max retries reached
-        ReconnMgr->>ConnMgr: onGiveUp()
-        ConnMgr->>UI: Update status: Failed
+    rect rgb(255, 205, 210)
+        Note over Retry,UI: Max Retries Reached
+        alt Max Retries Exceeded
+            Retry->>Node: Give up
+            Node->>UI: Update status: Failed
+            UI-->>Node: User may retry manually
+        end
     end
+    
+    Note right of Retry: Distributed Systems Concepts:<br/>• Failure detection (heartbeat)<br/>• Exponential backoff<br/>• Automatic recovery<br/>• Graceful degradation
 ```
 
-## 6. Message Persistence and Offline Queue
+**Distributed Systems Principles**:
+- **Failure Detection**: Heartbeat timeout mechanism
+- **Exponential Backoff**: Prevents network flooding
+- **Automatic Recovery**: Self-healing system
+- **Graceful Degradation**: System remains usable
+
+---
+
+## Diagram 6: Concurrent Connection Attempts (Glare Resolution)
+
+### Concept: Distributed Consensus Without Coordinator
+
+```mermaid
+sequenceDiagram
+    participant PeerA as Peer A<br/>(ID: alice)
+    participant PeerB as Peer B<br/>(ID: bob)
+    
+    Note over PeerA,PeerB: Glare Scenario: Simultaneous Connection Attempts
+    
+    rect rgb(255, 249, 196)
+        Note over PeerA,PeerB: Phase 1: Simultaneous Offers
+        
+        par Both create offers
+            PeerA->>PeerA: createOffer()
+            PeerA->>PeerA: setLocalDescription(offer_A)
+        and
+            PeerB->>PeerB: createOffer()
+            PeerB->>PeerB: setLocalDescription(offer_B)
+        end
+        
+        par Exchange offers
+            PeerA->>PeerB: Send offer_A
+        and
+            PeerB->>PeerA: Send offer_B
+        end
+    end
+    
+    rect rgb(255, 205, 210)
+        Note over PeerA,PeerB: Phase 2: Glare Detection
+        
+        PeerA->>PeerA: Receive offer_B (unexpected)
+        PeerA->>PeerA: GLARE DETECTED!
+        
+        PeerB->>PeerB: Receive offer_A (unexpected)
+        PeerB->>PeerB: GLARE DETECTED!
+    end
+    
+    rect rgb(200, 230, 201)
+        Note over PeerA,PeerB: Phase 3: Deterministic Resolution
+        
+        PeerA->>PeerA: Compare: "alice" < "bob"
+        PeerA->>PeerA: Role: POLITE (lower ID)
+        PeerA->>PeerA: rollback() local offer
+        PeerA->>PeerA: setRemoteDescription(offer_B)
+        PeerA->>PeerA: createAnswer()
+        PeerA->>PeerB: Send answer_A
+        
+        PeerB->>PeerB: Compare: "bob" > "alice"
+        PeerB->>PeerB: Role: IMPOLITE (higher ID)
+        PeerB->>PeerB: Ignore offer_A
+        PeerB->>PeerB: Wait for answer
+        PeerB->>PeerB: Receive answer_A
+        PeerB->>PeerB: setRemoteDescription(answer_A)
+    end
+    
+    rect rgb(227, 242, 253)
+        Note over PeerA,PeerB: Phase 4: Connection Established
+        PeerA<->>PeerB: WebRTC connection successful
+    end
+    
+    Note right of PeerB: Distributed Systems Concepts:<br/>• Distributed consensus<br/>• No central coordinator<br/>• Deterministic algorithm<br/>• Symmetric protocol
+```
+
+**Distributed Systems Principles**:
+- **Distributed Consensus**: Peers agree without coordinator
+- **Deterministic Resolution**: Same inputs → same outcome
+- **Symmetric Algorithm**: Both peers run identical logic
+- **Conflict Resolution**: Lexicographic ordering
+
+---
+
+## Diagram 7: Message Queuing During Network Partition
+
+### Concept: Eventual Consistency and Offline Operation
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant UI
-    participant Coord as ChatCoordinator
-    participant MsgSvc as MessagingService
-    participant WebRTC as WebRTCService
-    participant MsgRepo as MessageRepository
+    participant Node as Peer Node
+    participant Queue as Message Queue
+    participant Storage as Local Storage
+    participant Network as Network Layer
     
-    User->>UI: Send message
-    UI->>Coord: sendMessage(content)
-    Coord->>MsgSvc: sendMessage(content)
-    MsgSvc->>MsgRepo: saveMessage(status: pending)
-    MsgRepo-->>MsgSvc: Saved
+    Note over User,Network: Network Partition Scenario
     
-    alt WebRTC Connected
-        MsgSvc->>WebRTC: sendMessage(content)
-        WebRTC-->>MsgSvc: Success
-        MsgSvc->>MsgRepo: updateStatus(delivered)
-    else WebRTC Disconnected
-        MsgSvc->>MsgSvc: Queue message
-        Note over MsgSvc: Message stays in pending state
+    rect rgb(200, 230, 201)
+        Note over User,Network: Normal Operation
+        User->>Node: Send message 1
+        Node->>Storage: Save (status: pending)
+        Node->>Network: Transmit
+        Network-->>Node: ACK
+        Node->>Storage: Update (status: delivered)
     end
     
-    Note over WebRTC: Connection restored
-    
-    WebRTC->>Coord: onConnectionStateChange(connected)
-    Coord->>MsgSvc: sendPendingMessages()
-    MsgSvc->>MsgRepo: getPendingMessages()
-    MsgRepo-->>MsgSvc: Pending messages
-    
-    loop For each pending message
-        MsgSvc->>WebRTC: sendMessage(content)
-        WebRTC-->>MsgSvc: Success
-        MsgSvc->>MsgRepo: updateStatus(delivered)
+    rect rgb(255, 205, 210)
+        Note over Network: Network Partition Occurs
+        Network->>Network: Connection lost
     end
+    
+    rect rgb(255, 249, 196)
+        Note over User,Queue: Offline Mode (Queuing)
+        User->>Node: Send message 2
+        Node->>Storage: Save (status: pending)
+        Node->>Network: Attempt transmit
+        Network-->>Node: FAILED
+        Node->>Queue: Enqueue message 2
+        
+        User->>Node: Send message 3
+        Node->>Storage: Save (status: pending)
+        Node->>Network: Attempt transmit
+        Network-->>Node: FAILED
+        Node->>Queue: Enqueue message 3
+        
+        Note over Queue: Messages queued:<br/>[message 2, message 3]
+    end
+    
+    rect rgb(227, 242, 253)
+        Note over Network: Network Restored
+        Network->>Node: Connection restored
+        Node->>Queue: Flush queue
+        
+        loop For each queued message
+            Queue->>Network: Transmit message
+            Network-->>Queue: ACK
+            Queue->>Storage: Update status: delivered
+        end
+        
+        Queue->>Node: Queue empty
+    end
+    
+    rect rgb(200, 230, 201)
+        Note over User,Network: Normal Operation Resumed
+        User->>Node: Send message 4
+        Node->>Network: Transmit immediately
+        Network-->>Node: ACK
+    end
+    
+    Note right of Queue: Distributed Systems Concepts:<br/>• Partition tolerance<br/>• Offline operation<br/>• Message queuing<br/>• Eventual delivery
 ```
 
-## 7. Presence and Heartbeat
+**Distributed Systems Principles**:
+- **Partition Tolerance**: System works during network split
+- **Offline Operation**: Local-first architecture
+- **Message Queuing**: Buffering for reliability
+- **Eventual Delivery**: Guaranteed delivery when connected
+
+---
+
+## Diagram 8: Presence and Liveness Detection
+
+### Concept: Distributed Heartbeat Mechanism
 
 ```mermaid
 sequenceDiagram
-    participant ConnMgr_A as ConnectionManager A
-    participant MQTT_A as MQTTService A
-    participant Broker as MQTT Broker
-    participant MQTT_B as MQTTService B
-    participant ConnMgr_B as ConnectionManager B
-    participant UI_B as UI (User B)
+    participant NodeA as Peer A Node
+    participant MQTT as MQTT Broker
+    participant NodeB as Peer B Node
     
-    Note over ConnMgr_A: Chat opened with User B
+    Note over NodeA,NodeB: Distributed Liveness Detection
     
-    ConnMgr_A->>ConnMgr_A: setChatOpened(peerB, true)
-    ConnMgr_A->>ConnMgr_A: startPresenceHeartbeat()
-    
-    loop Every 30 seconds
-        ConnMgr_A->>MQTT_A: sendPresence(peerB, opened=true)
-        MQTT_A->>Broker: PUBLISH user/{peerB}/chatPresence
-        Broker->>MQTT_B: FORWARD chatPresence
-        MQTT_B->>ConnMgr_B: onSignalingMessage(chatPresence)
-        ConnMgr_B->>UI_B: Update presence indicator
+    rect rgb(200, 230, 201)
+        Note over NodeA: Chat Opened with Peer B
+        NodeA->>NodeA: Start heartbeat timer (30s)
+        
+        loop Every 30 seconds
+            NodeA->>MQTT: PUBLISH user/peerB/presence<br/>{status: "online", chatOpen: true}
+            MQTT->>NodeB: FORWARD presence
+            NodeB->>NodeB: Update last_seen timestamp
+            NodeB->>NodeB: Status: Peer A is online
+        end
     end
     
-    Note over ConnMgr_A: Chat closed
-    
-    ConnMgr_A->>ConnMgr_A: setChatOpened(peerB, false)
-    ConnMgr_A->>ConnMgr_A: stopPresenceHeartbeat()
-    ConnMgr_A->>MQTT_A: sendPresence(peerB, opened=false)
-    MQTT_A->>Broker: PUBLISH user/{peerB}/chatPresence
-    Broker->>MQTT_B: FORWARD chatPresence
-    MQTT_B->>ConnMgr_B: onSignalingMessage(chatPresence)
-    ConnMgr_B->>UI_B: Update presence indicator
-```
-
-## 8. Contact Removal
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant UI
-    participant Coord as ChatCoordinator
-    participant ContactSvc as ContactService
-    participant ConnMgr as ConnectionManager
-    participant WebRTC as WebRTCService
-    participant ContactRepo as ContactRepository
-    
-    User->>UI: Click "Remove Contact"
-    UI->>User: Confirm removal
-    User->>UI: Confirm
-    UI->>Coord: removeContact(peerId)
-    Coord->>ContactSvc: removeContact(peerId)
-    ContactSvc->>ConnMgr: Check if connected
-    
-    alt Connection exists
-        ConnMgr->>WebRTC: close()
-        WebRTC-->>ConnMgr: Closed
+    rect rgb(255, 205, 210)
+        Note over NodeA: Network Issue
+        NodeA->>NodeA: Heartbeat fails to send
+        
+        Note over NodeB: Timeout Detection
+        NodeB->>NodeB: Check last_seen timestamp
+        NodeB->>NodeB: Timeout exceeded (60s)
+        NodeB->>NodeB: Status: Peer A is offline
     end
     
-    ContactSvc->>ContactRepo: softDelete(peerId)
-    ContactRepo-->>ContactSvc: Deleted
-    ContactSvc-->>Coord: Success
-    Coord-->>UI: Contact removed
-    UI-->>User: Update contact list
+    rect rgb(227, 242, 253)
+        Note over NodeA: Network Restored
+        NodeA->>MQTT: PUBLISH presence (resumed)
+        MQTT->>NodeB: FORWARD presence
+        NodeB->>NodeB: Update last_seen
+        NodeB->>NodeB: Status: Peer A is online
+    end
+    
+    rect rgb(255, 249, 196)
+        Note over NodeA: Chat Closed
+        NodeA->>NodeA: Stop heartbeat timer
+        NodeA->>MQTT: PUBLISH user/peerB/presence<br/>{status: "online", chatOpen: false}
+        MQTT->>NodeB: FORWARD presence
+        NodeB->>NodeB: Status: Peer A closed chat
+    end
+    
+    Note right of NodeB: Distributed Systems Concepts:<br/>• Heartbeat mechanism<br/>• Failure detection<br/>• Timeout-based liveness<br/>• Soft state
 ```
 
-## Key Observations
+**Distributed Systems Principles**:
+- **Heartbeat Protocol**: Periodic liveness signals
+- **Failure Detection**: Timeout-based detection
+- **Soft State**: Presence information expires
+- **Eventual Accuracy**: May have temporary false negatives
 
-1. **Asynchronous Communication**: All operations are asynchronous with proper error handling
-2. **State Management**: Each service maintains its own state and notifies observers
-3. **Retry Logic**: Built-in retry mechanisms with exponential backoff
-4. **Message Persistence**: All messages are persisted locally before transmission
-5. **Connection Resilience**: Automatic reconnection on failure
-6. **Presence Awareness**: Heartbeat mechanism to track user presence
+---
+
+## Summary: Distributed Systems Concepts Illustrated
+
+| Diagram | Primary Concept | Secondary Concepts |
+|---------|----------------|-------------------|
+| **1. Initialization** | Service Discovery | Asynchronous bootstrapping, local state |
+| **2. Peer Discovery** | Publish-Subscribe | Loose coupling, message routing |
+| **3. Connection Setup** | Two-Phase Protocol | Reliable messaging, consensus |
+| **4. Message Transfer** | P2P Communication | Local-first, eventual consistency |
+| **5. Failure Recovery** | Fault Tolerance | Exponential backoff, self-healing |
+| **6. Glare Resolution** | Distributed Consensus | Deterministic algorithms |
+| **7. Message Queuing** | Partition Tolerance | Offline operation, eventual delivery |
+| **8. Presence** | Liveness Detection | Heartbeat, soft state |
+
+---
+
+## Academic Significance
+
+These sequence diagrams demonstrate:
+
+1. **Asynchronous Communication**: All interactions are non-blocking
+2. **Message Passing**: No shared memory, only messages
+3. **Distributed Coordination**: Consensus without central authority
+4. **Fault Tolerance**: Automatic failure detection and recovery
+5. **Eventual Consistency**: Temporary inconsistency for availability
+6. **Network Transparency**: Complexity hidden from application
+7. **Scalability**: O(1) and O(N) operations, no O(N²)
+
+These patterns are fundamental to distributed systems design and appear in many real-world systems (databases, messaging platforms, distributed file systems, etc.).

@@ -1,192 +1,223 @@
-# Documentation Index - React P2P Chat Application
+# Documentation Index - React P2P Chat (Academic)
 
-## 📚 Documentation Overview
+## Overview for Postgraduate Students
 
-This directory contains comprehensive documentation for the React P2P Chat Application, including architecture diagrams, communication flows, use cases, and technical specifications.
+This directory contains academic documentation for the React/TypeScript implementation of a peer-to-peer chat application. The documentation focuses on distributed systems concepts rather than implementation details, making it suitable for studying distributed systems theory in practice.
 
-## 📖 Documentation Files
+---
+
+## 📚 Documentation Files
 
 ### 1. [README.md](./README.md)
-**Main documentation file** - Start here for an overview of the project.
+**Distributed Systems Overview**
 
 **Contents:**
-- Architecture overview
-- Technology stack
-- Setup and installation instructions
-- Core components description
-- Project structure
-- Key features
+- System classification (hybrid distributed system)
+- Architectural principles and properties
+- Technology stack from distributed systems perspective
+- Core distributed systems concepts (discovery, consensus, fault tolerance, consistency)
+- System components (layered architecture)
+- Distributed systems challenges and solutions
+- Performance characteristics
+- Academic significance
 
-### 2. [Use Case Diagram](./use-case-diagram.md)
-**User interaction and system use cases**
+**Key Concepts:**
+- Autonomy, heterogeneity, asynchrony
+- Service discovery via MQTT
+- Polite peer pattern (consensus)
+- Eventually consistent (CAP theorem: AP)
 
-**Contents:**
-- System actors (User A, User B, MQTT Broker, WebRTC)
-- 13 detailed use cases with descriptions
-- Use case flow diagrams
-- Actor relationships
-- Use case priorities (High/Medium/Low)
-
-**Key Use Cases:**
-- UC1: Register/Login
-- UC2: Add Contact
-- UC6: Send Message
-- UC9: Establish P2P Connection
-- UC11: Reconnect on Failure
-
-### 3. [Sequence Diagrams](./sequence-diagrams.md)
-**Detailed interaction flows between components**
+### 2. [Sequence Diagrams](./sequence-diagrams.md)
+**Temporal Interactions in Distributed Systems**
 
 **Contents:**
 - 8 comprehensive sequence diagrams
-- User login and initialization
-- Add contact flow
-- Accept contact and establish connection
-- Send message flow
-- Connection failure and reconnection
-- Message persistence and offline queue
-- Presence and heartbeat
-- Contact removal
+- System initialization (distributed bootstrapping)
+- Peer discovery (publish-subscribe)
+- WebRTC connection establishment (two-phase protocol)
+- Message transmission (P2P data transfer)
+- Failure detection and recovery (exponential backoff)
+- Concurrent connection attempts (distributed consensus)
+- Message queuing during partitions (partition tolerance)
+- Presence and liveness detection (heartbeat protocol)
 
-### 4. [Component Architecture](./component-architecture.md)
-**System architecture and component details**
+**Distributed Systems Concepts:**
+- Asynchronous communication
+- Message passing
+- Distributed consensus
+- Fault tolerance
+- Eventual consistency
+- Network transparency
+
+### 3. [Use Case Diagram](./use-case-diagram.md)
+**System Interactions and Actors**
 
 **Contents:**
-- System architecture overview
-- Presentation layer (React components)
-- Coordination layer (ChatCoordinator)
-- Service layer (MQTT, WebRTC, Connection Manager, etc.)
-- Repository layer (Message and Contact repositories)
+- System actors (peers, MQTT broker, WebRTC)
+- 13 detailed use cases
+- Actor relationships
+- Use case priorities
+
+**Focus:** User interactions from distributed systems perspective
+
+### 4. [Component Architecture](./component-architecture.md)
+**System Structure and Organization**
+
+**Contents:**
+- Layered architecture (5 layers)
+- Component responsibilities
+- Distributed systems role of each layer
 - Data flow diagrams
 - Interface definitions
 
-**Key Components:**
-- ChatCoordinator
-- MQTTService
-- WebRTCService
-- ConnectionManager
-- MessagingService
-- ContactService
+**Focus:** How components implement distributed systems principles
 
 ### 5. [Communication Flow](./communication-flow.md)
-**Detailed communication protocols and flows**
+**Protocol Details and Message Flows**
 
 **Contents:**
-- Communication layers overview
-- MQTT signaling phase (topic structure, message types)
-- WebRTC connection establishment (ICE, SDP exchange)
-- Data transfer phase (data channel)
+- MQTT signaling protocol
+- WebRTC P2P protocol
 - Connection states
-- Network topology
-- Security (encryption layers)
-- Performance optimization
-- Error handling and retry strategy
+- Security layers
+- Performance optimizations
+
+**Focus:** Protocol-level distributed systems concepts
 
 ### 6. [State Diagrams](./state-diagrams.md)
-**State machines for all major components**
+**State Machines and Transitions**
 
 **Contents:**
-- 10 detailed state diagrams
-- Application state machine
+- 10 state diagrams
+- Application state
 - MQTT service state
 - WebRTC connection state
 - Message state
 - Contact state
-- Connection manager state
-- Data channel state
-- Presence state
 - Retry state machine
-- Message queue state
 
-## 🎯 Quick Navigation
-
-### For New Developers
-1. Start with [README.md](./README.md) for project overview
-2. Review [Component Architecture](./component-architecture.md) to understand the system
-3. Study [Sequence Diagrams](./sequence-diagrams.md) for interaction flows
-
-### For Understanding User Flows
-1. Check [Use Case Diagram](./use-case-diagram.md) for user interactions
-2. Review [Sequence Diagrams](./sequence-diagrams.md) for detailed flows
-
-### For Technical Implementation
-1. Study [Component Architecture](./component-architecture.md) for service details
-2. Review [Communication Flow](./communication-flow.md) for protocols
-3. Check [State Diagrams](./state-diagrams.md) for state management
-
-### For Debugging
-1. Review [State Diagrams](./state-diagrams.md) to understand current state
-2. Check [Sequence Diagrams](./sequence-diagrams.md) for expected flow
-3. Study [Communication Flow](./communication-flow.md) for protocol details
-
-## 🔑 Key Concepts
-
-### SOLID Principles
-All services follow SOLID principles:
-- **S**ingle Responsibility: Each service has one clear purpose
-- **O**pen/Closed: Extensible without modification
-- **L**iskov Substitution: Services are interchangeable via interfaces
-- **I**nterface Segregation: Focused, minimal interfaces
-- **D**ependency Inversion: Depend on abstractions, not concretions
-
-### Communication Model
-- **Signaling**: MQTT for connection setup and presence
-- **Data Transfer**: WebRTC for peer-to-peer messaging
-- **Persistence**: IndexedDB for local storage
-
-### Architecture Layers
-1. **Presentation**: React components
-2. **Coordination**: ChatCoordinator orchestrates services
-3. **Service**: Business logic (MQTT, WebRTC, etc.)
-4. **Repository**: Data persistence
-5. **Infrastructure**: External systems (MQTT broker, WebRTC)
-
-## 📊 Diagrams Summary
-
-| Diagram Type | Count | Purpose |
-|--------------|-------|---------|
-| Use Case Diagrams | 2 | User interactions and system actors |
-| Sequence Diagrams | 8 | Component interactions over time |
-| Component Diagrams | 10+ | System structure and relationships |
-| State Diagrams | 10 | State machines and transitions |
-| Flow Diagrams | 15+ | Data and control flow |
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React 19.2.0, TypeScript 5.9.3
-- **Build Tool**: Vite 7.2.4
-- **Signaling**: MQTT 5.14.1
-- **P2P**: WebRTC (Native API)
-- **Storage**: IndexedDB
-- **Linting**: ESLint
-
-## 📝 Documentation Standards
-
-All diagrams use **Mermaid** syntax for:
-- Version control friendly (text-based)
-- Easy to update and maintain
-- Renders in GitHub and most markdown viewers
-- Supports various diagram types
-
-## 🔗 Related Documentation
-
-- **Main Project README**: [../README.md](../README.md)
-- **Flutter Implementation**: [../../p2p_chat_flutter/docs/](../../p2p_chat_flutter/docs/)
-- **Cross-Project Comparison**: [../../COMPARISON.md](../../COMPARISON.md)
-
-## 📧 Contributing to Documentation
-
-When updating documentation:
-1. Keep diagrams up-to-date with code changes
-2. Use consistent terminology across documents
-3. Update this index when adding new documentation
-4. Follow existing diagram styles and formats
-5. Include both high-level and detailed views
-
-## 📅 Last Updated
-
-This documentation was last updated: **January 3, 2026**
+**Focus:** State management in distributed systems
 
 ---
 
-**Note**: This is a living documentation. As the project evolves, these documents should be updated to reflect the current state of the system.
+## 🎯 Quick Navigation for Students
+
+### Understanding Distributed Systems Concepts
+
+**Start Here:**
+1. [README.md](./README.md) - System overview and core concepts
+2. [Sequence Diagrams](./sequence-diagrams.md) - How components interact over time
+3. [Component Architecture](./component-architecture.md) - System structure
+
+**Deep Dive:**
+- **Consensus**: Sequence Diagram 6 (Glare Resolution)
+- **Fault Tolerance**: Sequence Diagram 5 (Failure Recovery)
+- **Eventual Consistency**: Sequence Diagram 7 (Message Queuing)
+- **P2P Communication**: Sequence Diagram 4 (Message Transfer)
+
+### Studying Specific Topics
+
+| Topic | Document | Section |
+|-------|----------|---------|
+| **CAP Theorem** | README.md | Consistency Model |
+| **Publish-Subscribe** | Sequence Diagrams | Diagram 2 |
+| **Two-Phase Protocol** | Sequence Diagrams | Diagram 3 |
+| **Exponential Backoff** | Sequence Diagrams | Diagram 5 |
+| **Distributed Consensus** | Sequence Diagrams | Diagram 6 |
+| **Partition Tolerance** | Sequence Diagrams | Diagram 7 |
+| **Heartbeat Protocol** | Sequence Diagrams | Diagram 8 |
+
+---
+
+## 🔑 Key Distributed Systems Principles
+
+### 1. Hybrid Architecture
+- **Centralized**: MQTT broker for signaling
+- **Decentralized**: WebRTC for data transfer
+- **Rationale**: Best of both worlds
+
+### 2. CAP Theorem Application
+- **Choice**: AP (Availability + Partition Tolerance)
+- **Trade-off**: Eventual consistency over strong consistency
+- **Justification**: Chat can tolerate temporary inconsistency
+
+### 3. Consensus Without Coordinator
+- **Algorithm**: Polite peer pattern
+- **Mechanism**: Deterministic conflict resolution
+- **Benefit**: No single point of failure
+
+### 4. Fault Tolerance
+- **Detection**: Heartbeat timeout
+- **Recovery**: Exponential backoff retry
+- **Graceful Degradation**: Offline message queuing
+
+---
+
+## 📊 Diagram Summary
+
+| Type | Count | Purpose |
+|------|-------|---------|
+| **Sequence Diagrams** | 8 | Temporal interactions |
+| **Component Diagrams** | 10+ | System structure |
+| **State Diagrams** | 10 | State machines |
+| **Flow Diagrams** | 15+ | Data and control flow |
+
+All diagrams use **Mermaid** syntax for version control and easy rendering.
+
+---
+
+## 🔗 Related Documentation
+
+### Cross-Project Documentation
+- **[Distributed Systems Overview](../../DISTRIBUTED_SYSTEMS_OVERVIEW.md)**: Theoretical foundation
+- **[Distributed Systems Diagrams](../../DISTRIBUTED_SYSTEMS_DIAGRAMS.md)**: Visual explanations
+- **[Comparison](../../COMPARISON.md)**: React vs Flutter
+
+### Flutter Implementation
+- **[Flutter Docs](../../p2p_chat_flutter/docs/)**: Cross-platform implementation
+
+---
+
+## 📝 Academic Usage
+
+### For Lectures
+- Use sequence diagrams to illustrate distributed protocols
+- Reference CAP theorem trade-offs
+- Demonstrate consensus algorithms
+- Show fault tolerance mechanisms
+
+### For Assignments
+- Analyze distributed systems properties
+- Compare with alternative architectures
+- Evaluate scalability characteristics
+- Design improvements or extensions
+
+### For Research
+- Study hybrid architectures
+- Investigate P2P protocols
+- Analyze consistency models
+- Examine fault tolerance strategies
+
+---
+
+## 🎓 Learning Objectives
+
+After studying this documentation, students should understand:
+
+1. **Distributed System Design**: How to combine centralized and decentralized approaches
+2. **Protocol Selection**: Why MQTT for signaling and WebRTC for data
+3. **Consensus Algorithms**: How peers resolve conflicts without coordinator
+4. **Fault Tolerance**: Mechanisms for failure detection and recovery
+5. **Consistency Models**: Trade-offs between consistency and availability
+6. **Network Transparency**: How complexity is hidden from application
+7. **Scalability**: How architecture affects cost and performance
+
+---
+
+## 📅 Last Updated
+
+January 3, 2026
+
+---
+
+**Note**: This documentation emphasizes distributed systems theory over implementation details. For implementation specifics, refer to the source code with the theoretical understanding gained from these documents.
