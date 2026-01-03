@@ -42,7 +42,7 @@ sequenceDiagram
         LocalNode-->>User: System Ready
     end
     
-    Note right of LocalNode: Distributed Systems Concepts:<br/>• Asynchronous initialization<br/>• Decoupled service discovery<br/>• Local-first architecture
+    Note right of LocalNode: Distributed Systems Concepts:<br/>- Asynchronous initialization<br/>- Decoupled service discovery<br/>- Local-first architecture
 ```
 
 **Distributed Systems Principles**:
@@ -87,7 +87,7 @@ sequenceDiagram
         PeerB-->>UserB: Show contact request dialog
     end
     
-    Note right of Broker: Distributed Systems Concepts:<br/>• Publish-subscribe decoupling<br/>• Asynchronous messaging<br/>• No direct peer addressing<br/>• Broker-mediated discovery
+    Note right of Broker: Distributed Systems Concepts:<br/>- Publish-subscribe decoupling<br/>- Asynchronous messaging<br/>- No direct peer addressing<br/>- Broker-mediated discovery
 ```
 
 **Distributed Systems Principles**:
@@ -114,7 +114,7 @@ sequenceDiagram
     
     rect rgb(255, 249, 196)
         Note over PeerA,SignalA: Phase 1: Offer Creation
-        PeerA->>PeerA: createOffer() → SDP
+        PeerA->>PeerA: createOffer() -> SDP
         PeerA->>PeerA: setLocalDescription(offer)
         PeerA->>SignalA: Send offer
         SignalA->>Broker: PUBLISH user/peerB/offer
@@ -129,7 +129,7 @@ sequenceDiagram
         Note over SignalB,PeerB: Phase 2: Answer Creation
         SignalB->>PeerB: Deliver offer
         PeerB->>PeerB: setRemoteDescription(offer)
-        PeerB->>PeerB: createAnswer() → SDP
+        PeerB->>PeerB: createAnswer() -> SDP
         PeerB->>PeerB: setLocalDescription(answer)
         PeerB->>SignalB: Send answer
         SignalB->>Broker: PUBLISH user/peerA/answer
@@ -160,11 +160,11 @@ sequenceDiagram
     
     rect rgb(200, 230, 201)
         Note over PeerA,PeerB: Phase 5: Direct P2P Connection
-        PeerA<->>PeerB: WebRTC Connection Established
+        Note over PeerA,PeerB: WebRTC Connection Established
         Note over PeerA,PeerB: Signaling complete,<br/>data flows peer-to-peer
     end
     
-    Note right of PeerB: Distributed Systems Concepts:<br/>• Two-phase commit (offer/answer)<br/>• Reliable signaling (MQTT QoS 1)<br/>• Parallel ICE gathering<br/>• NAT traversal (STUN/TURN)
+    Note right of PeerB: Distributed Systems Concepts:<br/>- Two-phase commit (offer/answer)<br/>- Reliable signaling (MQTT QoS 1)<br/>- Parallel ICE gathering<br/>- NAT traversal (STUN/TURN)
 ```
 
 **Distributed Systems Principles**:
@@ -223,7 +223,7 @@ sequenceDiagram
         NodeA-->>UserA: Show checkmark
     end
     
-    Note right of DataChannel: Distributed Systems Concepts:<br/>• Peer-to-peer (no intermediary)<br/>• Eventually consistent storage<br/>• Asynchronous acknowledgment<br/>• Local-first architecture
+    Note right of DataChannel: Distributed Systems Concepts:<br/>- Peer-to-peer (no intermediary)<br/>- Eventually consistent storage<br/>- Asynchronous acknowledgment<br/>- Local-first architecture
 ```
 
 **Distributed Systems Principles**:
@@ -296,7 +296,7 @@ sequenceDiagram
         end
     end
     
-    Note right of Retry: Distributed Systems Concepts:<br/>• Failure detection (heartbeat)<br/>• Exponential backoff<br/>• Automatic recovery<br/>• Graceful degradation
+    Note right of Retry: Distributed Systems Concepts:<br/>- Failure detection (heartbeat)<br/>- Exponential backoff<br/>- Automatic recovery<br/>- Graceful degradation
 ```
 
 **Distributed Systems Principles**:
@@ -366,15 +366,15 @@ sequenceDiagram
     
     rect rgb(227, 242, 253)
         Note over PeerA,PeerB: Phase 4: Connection Established
-        PeerA<->>PeerB: WebRTC connection successful
+        Note over PeerA,PeerB: WebRTC connection successful
     end
     
-    Note right of PeerB: Distributed Systems Concepts:<br/>• Distributed consensus<br/>• No central coordinator<br/>• Deterministic algorithm<br/>• Symmetric protocol
+    Note right of PeerB: Distributed Systems Concepts:<br/>- Distributed consensus<br/>- No central coordinator<br/>- Deterministic algorithm<br/>- Symmetric protocol
 ```
 
 **Distributed Systems Principles**:
 - **Distributed Consensus**: Peers agree without coordinator
-- **Deterministic Resolution**: Same inputs → same outcome
+- **Deterministic Resolution**: Same inputs -> same outcome
 - **Symmetric Algorithm**: Both peers run identical logic
 - **Conflict Resolution**: Lexicographic ordering
 
@@ -446,7 +446,7 @@ sequenceDiagram
         Network-->>Node: ACK
     end
     
-    Note right of Queue: Distributed Systems Concepts:<br/>• Partition tolerance<br/>• Offline operation<br/>• Message queuing<br/>• Eventual delivery
+    Note right of Queue: Distributed Systems Concepts:<br/>- Partition tolerance<br/>- Offline operation<br/>- Message queuing<br/>- Eventual delivery
 ```
 
 **Distributed Systems Principles**:
@@ -507,7 +507,7 @@ sequenceDiagram
         NodeB->>NodeB: Status: Peer A closed chat
     end
     
-    Note right of NodeB: Distributed Systems Concepts:<br/>• Heartbeat mechanism<br/>• Failure detection<br/>• Timeout-based liveness<br/>• Soft state
+    Note right of NodeB: Distributed Systems Concepts:<br/>- Heartbeat mechanism<br/>- Failure detection<br/>- Timeout-based liveness<br/>- Soft state
 ```
 
 **Distributed Systems Principles**:
@@ -543,6 +543,6 @@ These sequence diagrams demonstrate:
 4. **Fault Tolerance**: Automatic failure detection and recovery
 5. **Eventual Consistency**: Temporary inconsistency for availability
 6. **Network Transparency**: Complexity hidden from application
-7. **Scalability**: O(1) and O(N) operations, no O(N²)
+7. **Scalability**: O(1) and O(N) operations, no O(N^2)
 
 These patterns are fundamental to distributed systems design and appear in many real-world systems (databases, messaging platforms, distributed file systems, etc.).

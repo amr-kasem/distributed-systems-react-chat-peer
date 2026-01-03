@@ -358,19 +358,19 @@ stateDiagram-v2
 ### Critical State Transitions
 
 1. **Initialization Flow**
-   - `Idle` → `Connecting` → `Ready` → `Active`
+   - `Idle` -> `Connecting` -> `Ready` -> `Active`
 
 2. **Connection Establishment**
-   - `New` → `Initiating` → `Connecting` → `Connected` → `Stable`
+   - `New` -> `Initiating` -> `Connecting` -> `Connected` -> `Stable`
 
 3. **Disconnection Recovery**
-   - `Connected` → `Disconnected` → `Reconnecting` → `Connected`
+   - `Connected` -> `Disconnected` -> `Reconnecting` -> `Connected`
 
 4. **Message Delivery**
-   - `Composing` → `Pending` → `Sending` → `Sent` → `Delivered`
+   - `Composing` -> `Pending` -> `Sending` -> `Sent` -> `Delivered`
 
 5. **Contact Management**
-   - `Unknown` → `RequestSent` → `Pending` → `Accepted` → `Active`
+   - `Unknown` -> `RequestSent` -> `Pending` -> `Accepted` -> `Active`
 
 ### Error States
 

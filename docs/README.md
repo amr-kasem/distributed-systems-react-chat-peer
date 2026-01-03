@@ -206,7 +206,7 @@ When both peers simultaneously initiate connection (glare condition):
 ### Scalability
 - **Broker Load**: O(N) - linear with number of peers
 - **Data Transfer**: O(1) - peer-to-peer, no broker involvement
-- **Comparison**: Traditional client-server is O(N²)
+- **Comparison**: Traditional client-server is O(N^2)
 
 ### Reliability
 - **Message Delivery**: At-least-once (MQTT QoS 1)

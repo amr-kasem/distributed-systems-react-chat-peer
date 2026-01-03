@@ -657,8 +657,8 @@ graph TB
 graph LR
     subgraph "Client-Server Scaling"
         CS_Users[N Users]
-        CS_Server[Server Load: O(N²)]
-        CS_Cost[Cost: O(N²)]
+        CS_Server[Server Load: O(N^2)]
+        CS_Cost[Cost: O(N^2)]
         
         CS_Users --> CS_Server
         CS_Server --> CS_Cost
@@ -679,7 +679,7 @@ graph LR
     style P2P_Cost fill:#81c784
 ```
 
-**Key Insight**: MQTT broker only handles signaling (small messages), not data transfer. This keeps costs linear O(N) instead of quadratic O(N²).
+**Key Insight**: MQTT broker only handles signaling (small messages), not data transfer. This keeps costs linear O(N) instead of quadratic O(N^2).
 
 ---
 

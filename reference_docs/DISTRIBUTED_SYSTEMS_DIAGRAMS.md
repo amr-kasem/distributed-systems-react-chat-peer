@@ -18,7 +18,7 @@ graph TB
         C1_User3[User 3] --> C1_Server
         C1_Server --> C1_DB[(Database)]
         
-        C1_Problems[Problems:<br/>• Server bottleneck<br/>• Single point of failure<br/>• High latency<br/>• Privacy concerns<br/>• Scaling costs O(N²)]
+        C1_Problems[Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O(N^2)]
     end
     
     subgraph "Generation 2: Federated (2000s)"
@@ -29,7 +29,7 @@ graph TB
         
         F1_Server1 <--> F1_Server2
         
-        F1_Problems[Problems:<br/>• Still server-dependent<br/>• Complex federation<br/>• Trust issues<br/>• Moderate latency]
+        F1_Problems[Problems:<br/>- Still server-dependent<br/>- Complex federation<br/>- Trust issues<br/>- Moderate latency]
     end
     
     subgraph "Generation 3: Pure P2P (2010s)"
@@ -38,7 +38,7 @@ graph TB
         P1_User2 <--> P1_User3
         P1_User2 <--> P1_User4[User 4]
         
-        P1_Problems[Problems:<br/>• NAT traversal difficult<br/>• Peer discovery complex<br/>• No guaranteed delivery<br/>• Bootstrap problem]
+        P1_Problems[Problems:<br/>- NAT traversal difficult<br/>- Peer discovery complex<br/>- No guaranteed delivery<br/>- Bootstrap problem]
     end
     
     subgraph "Generation 4: Hybrid P2P (Our Approach - 2020s)"
@@ -50,7 +50,7 @@ graph TB
         H1_User2 -.->|Signaling| H1_Broker
         H1_User3 -.->|Signaling| H1_Broker
         
-        H1_Benefits[Benefits:<br/>✓ Low latency (P2P data)<br/>✓ Reliable signaling (MQTT)<br/>✓ NAT traversal (WebRTC)<br/>✓ Scalable O(N)<br/>✓ Privacy preserved]
+        H1_Benefits[Benefits:<br/>[OK] Low latency (P2P data)<br/>[OK] Reliable signaling (MQTT)<br/>[OK] NAT traversal (WebRTC)<br/>[OK] Scalable O(N)<br/>[OK] Privacy preserved]
     end
     
     style C1_Server fill:#ef5350
@@ -343,8 +343,8 @@ graph TB
     subgraph "Centralized Architecture"
         C_Users[N Users]
         C_Server[Central Server]
-        C_Connections[N² connections through server]
-        C_Bandwidth[Server Bandwidth: O(N²)]
+        C_Connections[N^2 connections through server]
+        C_Bandwidth[Server Bandwidth: O(N^2)]
         C_Cost[Monthly Cost: $$$$$]
         
         C_Users --> C_Server
@@ -385,7 +385,7 @@ graph TB
 | 1,000 | 1,000,000 msg/s | 1,000 msg/s | 1000:1 |
 | 10,000 | 100,000,000 msg/s | 10,000 msg/s | 10000:1 |
 
-**Key Insight**: P2P architecture scales **linearly** O(N) while centralized scales **quadratically** O(N²)
+**Key Insight**: P2P architecture scales **linearly** O(N) while centralized scales **quadratically** O(N^2)
 
 ---
 
@@ -403,15 +403,15 @@ graph TB
     
     C --> CP[CP Systems]
     P --> CP
-    CP --> CP_Ex[Examples:<br/>• Banking systems<br/>• MQTT broker<br/>• Distributed databases]
+    CP --> CP_Ex[Examples:<br/>- Banking systems<br/>- MQTT broker<br/>- Distributed databases]
     
     A --> AP[AP Systems]
     P --> AP
-    AP --> AP_Ex[Examples:<br/>• DNS<br/>• Cassandra<br/>• Our P2P Chat]
+    AP --> AP_Ex[Examples:<br/>- DNS<br/>- Cassandra<br/>- Our P2P Chat]
     
     C --> CA[CA Systems]
     A --> CA
-    CA --> CA_Ex[Examples:<br/>• Single-server databases<br/>• Not partition-tolerant<br/>• Rare in distributed systems]
+    CA --> CA_Ex[Examples:<br/>- Single-server databases<br/>- Not partition-tolerant<br/>- Rare in distributed systems]
     
     style AP fill:#81c784
     style CP fill:#4fc3f7
@@ -437,7 +437,7 @@ sequenceDiagram
         P1_DB->>P1_DB: User sends message D
         P1_DB->>P1_DB: Local DB: [A, B, C, D]
         
-        Note over Network: ❌ Cannot sync
+        Note over Network: [X] Cannot sync
         
         P2_DB->>P2_DB: User sends message E
         P2_DB->>P2_DB: Local DB: [A, B, C, E]
@@ -465,7 +465,7 @@ sequenceDiagram
 - ✅ Users can always send messages (Availability)
 - ✅ Works during network failures (Partition Tolerance)
 - ✅ Messages sync when connection restored (Eventual Consistency)
-- ❌ Temporary inconsistency acceptable for chat (Trade-off)
+- [X] Temporary inconsistency acceptable for chat (Trade-off)
 
 ---
 
@@ -530,7 +530,7 @@ sequenceDiagram
         Note over A,B: Phase 4: Connection Established
         A->>B: ICE candidates
         B->>A: ICE candidates
-        Note over A,B: ✓ Connection successful<br/>✓ No coordinator needed<br/>✓ Deterministic outcome
+        Note over A,B: [OK] Connection successful<br/>[OK] No coordinator needed<br/>[OK] Deterministic outcome
     end
 ```
 
@@ -571,9 +571,9 @@ graph TB
     end
     
     subgraph "Threat Model"
-        Eavesdropper[Eavesdropper<br/>❌ Cannot read]
-        MITM[Man-in-the-Middle<br/>❌ Cannot modify]
-        Replay[Replay Attack<br/>❌ Detected by sequence numbers]
+        Eavesdropper[Eavesdropper<br/>[X] Cannot read]
+        MITM[Man-in-the-Middle<br/>[X] Cannot modify]
+        Replay[Replay Attack<br/>[X] Detected by sequence numbers]
     end
     
     PlainText --> DTLS
