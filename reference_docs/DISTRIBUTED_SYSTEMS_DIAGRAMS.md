@@ -18,7 +18,7 @@ graph TB
         C1_User3[User 3] --> C1_Server
         C1_Server --> C1_DB[(Database)]
         
-        C1_Problems[Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O(N^2)]
+        C1_Problems["Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O(N^2)"]
     end
     
     subgraph "Generation 2: Federated (2000s)"
@@ -344,7 +344,7 @@ graph TB
         C_Users[N Users]
         C_Server[Central Server]
         C_Connections[N^2 connections through server]
-        C_Bandwidth[Server Bandwidth: O(N^2)]
+        C_Bandwidth["Server Bandwidth: O(N^2)"]
         C_Cost[Monthly Cost: $$$$$]
         
         C_Users --> C_Server
@@ -549,7 +549,7 @@ sequenceDiagram
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        PlainText[Plain Text Message<br/>"Hello, World!"]
+        PlainText["Plain Text Message<br/>'Hello, World!'"]
     end
     
     subgraph "Encryption Layers"
