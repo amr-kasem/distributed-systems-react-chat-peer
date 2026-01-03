@@ -261,7 +261,7 @@ stateDiagram-v2
     }
     
     state BrokerFailure {
-        [*] --> SignalingDown: Can't send signals
+        [*] --> SignalingDown: Cannot send signals
         SignalingDown --> ExistingOK: Existing connections OK
         ExistingOK --> NewBlocked: New connections blocked
         NewBlocked --> BrokerReturns: Broker restored

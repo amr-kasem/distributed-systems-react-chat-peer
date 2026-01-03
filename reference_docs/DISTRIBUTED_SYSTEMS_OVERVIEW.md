@@ -107,7 +107,7 @@ graph LR
     
     P1 --> NAT_A
     NAT_A --> STUN
-    NAT_A -.->|Can't reach directly| NAT_B
+    NAT_A -.->|Cannot reach directly| NAT_B
     NAT_B --> P2
     NAT_B --> STUN
     
