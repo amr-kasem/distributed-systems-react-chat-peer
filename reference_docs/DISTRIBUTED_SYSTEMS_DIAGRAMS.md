@@ -18,7 +18,7 @@ graph TB
         C1_User3["User 3"] --> C1_Server
         C1_Server --> C1_DB["(Database)"]
         
-        C1_Problems["Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O("N^2")"]
+        C1_Problems["Problems: Server bottleneck, Single point of failure, High latency, Privacy concerns, Scaling costs O of N squared"]
     end
     
     subgraph "Generation 2: Federated (2000s)"
@@ -50,7 +50,7 @@ graph TB
         H1_User2 -.->|Signaling| H1_Broker
         H1_User3 -.->|Signaling| H1_Broker
         
-        H1_Benefits["Benefits:<br/>[OK"] Low latency (P2P data)<br/>[OK] Reliable signaling (MQTT)<br/>[OK] NAT traversal (WebRTC)<br/>[OK] Scalable O(N)<br/>[OK] Privacy preserved]
+        H1_Benefits["Benefits: Low latency P2P data, Reliable signaling MQTT, NAT traversal WebRTC, Scalable O of N, Privacy preserved"]
     end
     
     style C1_Server fill:#ef5350
@@ -344,7 +344,7 @@ graph TB
         C_Users["N Users"]
         C_Server["Central Server"]
         C_Connections["N^2 connections through server"]
-        C_Bandwidth["Server Bandwidth: O("N^2")"]
+        C_Bandwidth["Server Bandwidth: O of N squared"]
         C_Cost["Monthly Cost: $$$$$"]
         
         C_Users --> C_Server
@@ -385,7 +385,7 @@ graph TB
 | 1,000 | 1,000,000 msg/s | 1,000 msg/s | 1000:1 |
 | 10,000 | 100,000,000 msg/s | 10,000 msg/s | 10000:1 |
 
-**Key Insight**: P2P architecture scales **linearly** O(N) while centralized scales **quadratically** O(N^2)
+**Key Insight**: P2P architecture scales **linearly** O(N) while centralized scales **quadratically** O(N squared)
 
 ---
 
@@ -549,7 +549,7 @@ sequenceDiagram
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        PlainText["Plain Text Message<br/>'Hello, World!'"]
+        PlainText["Plain Text Message: Hello World"]
     end
     
     subgraph "Encryption Layers"
@@ -571,9 +571,9 @@ graph TB
     end
     
     subgraph "Threat Model"
-        Eavesdropper["Eavesdropper<br/>[X"] Cannot read]
-        MITM["Man-in-the-Middle<br/>[X"] Cannot modify]
-        Replay["Replay Attack<br/>[X"] Detected by sequence numbers]
+        Eavesdropper["Eavesdropper: Cannot read"]
+        MITM["Man-in-the-Middle: Cannot modify"]
+        Replay["Replay Attack: Detected by sequence numbers"]
     end
     
     PlainText --> DTLS

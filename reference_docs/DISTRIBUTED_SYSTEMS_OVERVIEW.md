@@ -657,8 +657,8 @@ graph TB
 graph LR
     subgraph "Client-Server Scaling"
         CS_Users["N Users"]
-        CS_Server["Server Load: O("N^2")"]
-        CS_Cost["Cost: O("N^2")"]
+        CS_Server["Server Load: O of N squared"]
+        CS_Cost["Cost: O of N squared"]
         
         CS_Users --> CS_Server
         CS_Server --> CS_Cost
