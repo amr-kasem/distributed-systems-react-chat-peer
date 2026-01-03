@@ -27,8 +27,8 @@ graph TB
         UC13["Search Contacts"]
     end
     
-    UserA("(User A"))
-    UserB("(User B"))
+    UserA([User A])
+    UserB([User B])
     MQTT["MQTT Broker"]
     WebRTC[WebRTC]
     

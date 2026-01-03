@@ -699,7 +699,7 @@ graph LR
 
 ```mermaid
 mindmap
-  root("(Distributed<br/>Systems<br/>Lessons"))
+  root((Distributed Systems Lessons))
     Protocol Selection
       MQTT for reliability
       WebRTC for performance
