@@ -1,0 +1,9 @@
+services:
+  chat-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:80"
+    container_name: chat-app-react
+    restart: always
