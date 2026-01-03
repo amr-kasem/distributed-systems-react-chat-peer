@@ -21,7 +21,7 @@ sequenceDiagram
     
     User->>LocalNode: Initialize (userId)
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over LocalNode,MQTT: Phase 1: Connect to Discovery Service
         LocalNode->>MQTT: CONNECT (clientId: userId)
         MQTT-->>LocalNode: CONNACK (session present)
@@ -29,7 +29,7 @@ sequenceDiagram
         MQTT-->>LocalNode: SUBACK
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over LocalNode,Storage: Phase 2: Load Local State
         LocalNode->>Storage: Load contacts
         Storage-->>LocalNode: Contact list
@@ -37,7 +37,7 @@ sequenceDiagram
         Storage-->>LocalNode: Messages
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over LocalNode: Phase 3: Ready State
         LocalNode-->>User: System Ready
     end
@@ -67,19 +67,19 @@ sequenceDiagram
     
     Note over UserA,UserB: Distributed Peer Discovery
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over UserA,PeerA: Initiator Side
         UserA->>PeerA: Add contact (peerB_id, name)
         PeerA->>PeerA: Create contact request message
         PeerA->>Broker: PUBLISH user/peerB/contactRequest
     end
     
-    rect rgb(255, 224, 178)
+    rect rgb("255, 224, 178")
         Note over Broker: Message Routing (O(1) lookup)
         Broker->>Broker: Route to subscribers
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over PeerB,UserB: Receiver Side
         Broker->>PeerB: FORWARD contactRequest
         PeerB->>PeerB: Validate message
@@ -112,7 +112,7 @@ sequenceDiagram
     
     Note over PeerA,PeerB: Distributed Connection Negotiation
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over PeerA,SignalA: Phase 1: Offer Creation
         PeerA->>PeerA: createOffer() -> SDP
         PeerA->>PeerA: setLocalDescription(offer)
@@ -120,12 +120,12 @@ sequenceDiagram
         SignalA->>Broker: PUBLISH user/peerB/offer
     end
     
-    rect rgb(255, 224, 178)
+    rect rgb("255, 224, 178")
         Note over Broker: Reliable Message Delivery (QoS 1)
         Broker->>SignalB: FORWARD offer (with ACK)
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over SignalB,PeerB: Phase 2: Answer Creation
         SignalB->>PeerB: Deliver offer
         PeerB->>PeerB: setRemoteDescription(offer)
@@ -135,14 +135,14 @@ sequenceDiagram
         SignalB->>Broker: PUBLISH user/peerA/answer
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over Broker,PeerA: Phase 3: Answer Delivery
         Broker->>SignalA: FORWARD answer
         SignalA->>PeerA: Deliver answer
         PeerA->>PeerA: setRemoteDescription(answer)
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over PeerA,PeerB: Phase 4: ICE Candidate Exchange
         
         par ICE Gathering (Parallel)
@@ -158,7 +158,7 @@ sequenceDiagram
         end
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over PeerA,PeerB: Phase 5: Direct P2P Connection
         Note over PeerA,PeerB: WebRTC Connection Established
         Note over PeerA,PeerB: Signaling complete,<br/>data flows peer-to-peer
@@ -191,7 +191,7 @@ sequenceDiagram
     
     Note over UserA,UserB: Distributed Message Delivery
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over UserA,StorageA: Phase 1: Local Processing (Peer A)
         UserA->>NodeA: Send message "Hello"
         NodeA->>NodeA: Create message object<br/>(id, timestamp, content)
@@ -200,13 +200,13 @@ sequenceDiagram
         NodeA-->>UserA: Show message (sending...)
     end
     
-    rect rgb(255, 224, 178)
+    rect rgb("255, 224, 178")
         Note over NodeA,DataChannel: Phase 2: P2P Transmission
         NodeA->>DataChannel: Send via DTLS/SCTP
         Note over DataChannel: Direct P2P<br/>No broker involved<br/>Low latency (~10-50ms)
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over DataChannel,UserB: Phase 3: Remote Processing (Peer B)
         DataChannel->>NodeB: Receive message
         NodeB->>NodeB: Validate & deserialize
@@ -215,7 +215,7 @@ sequenceDiagram
         NodeB-->>UserB: Display "Hello"
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over NodeB,UserA: Phase 4: Acknowledgment
         NodeB->>DataChannel: Send ACK
         DataChannel->>NodeA: Deliver ACK
@@ -248,14 +248,14 @@ sequenceDiagram
     
     Note over Node,UI: Distributed Failure Handling
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over WebRTC: Network Failure Occurs
         WebRTC->>Node: onConnectionStateChange(failed)
         Node->>Node: Detect failure
         Node->>UI: Update status: Reconnecting
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over Node,Retry: Exponential Backoff Algorithm
         Node->>Retry: Start retry sequence
         
@@ -287,7 +287,7 @@ sequenceDiagram
         end
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over Retry,UI: Max Retries Reached
         alt Max Retries Exceeded
             Retry->>Node: Give up
@@ -318,7 +318,7 @@ sequenceDiagram
     
     Note over PeerA,PeerB: Glare Scenario: Simultaneous Connection Attempts
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over PeerA,PeerB: Phase 1: Simultaneous Offers
         
         par Both create offers
@@ -336,7 +336,7 @@ sequenceDiagram
         end
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over PeerA,PeerB: Phase 2: Glare Detection
         
         PeerA->>PeerA: Receive offer_B (unexpected)
@@ -346,7 +346,7 @@ sequenceDiagram
         PeerB->>PeerB: GLARE DETECTED!
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over PeerA,PeerB: Phase 3: Deterministic Resolution
         
         PeerA->>PeerA: Compare: "alice" < "bob"
@@ -364,7 +364,7 @@ sequenceDiagram
         PeerB->>PeerB: setRemoteDescription(answer_A)
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over PeerA,PeerB: Phase 4: Connection Established
         Note over PeerA,PeerB: WebRTC connection successful
     end
@@ -394,7 +394,7 @@ sequenceDiagram
     
     Note over User,Network: Network Partition Scenario
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over User,Network: Normal Operation
         User->>Node: Send message 1
         Node->>Storage: Save (status: pending)
@@ -403,12 +403,12 @@ sequenceDiagram
         Node->>Storage: Update (status: delivered)
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over Network: Network Partition Occurs
         Network->>Network: Connection lost
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over User,Queue: Offline Mode (Queuing)
         User->>Node: Send message 2
         Node->>Storage: Save (status: pending)
@@ -425,7 +425,7 @@ sequenceDiagram
         Note over Queue: Messages queued:<br/>[message 2, message 3]
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over Network: Network Restored
         Network->>Node: Connection restored
         Node->>Queue: Flush queue
@@ -439,7 +439,7 @@ sequenceDiagram
         Queue->>Node: Queue empty
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over User,Network: Normal Operation Resumed
         User->>Node: Send message 4
         Node->>Network: Transmit immediately
@@ -469,7 +469,7 @@ sequenceDiagram
     
     Note over NodeA,NodeB: Distributed Liveness Detection
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over NodeA: Chat Opened with Peer B
         NodeA->>NodeA: Start heartbeat timer (30s)
         
@@ -481,7 +481,7 @@ sequenceDiagram
         end
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over NodeA: Network Issue
         NodeA->>NodeA: Heartbeat fails to send
         
@@ -491,7 +491,7 @@ sequenceDiagram
         NodeB->>NodeB: Status: Peer A is offline
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over NodeA: Network Restored
         NodeA->>MQTT: PUBLISH presence (resumed)
         MQTT->>NodeB: FORWARD presence
@@ -499,7 +499,7 @@ sequenceDiagram
         NodeB->>NodeB: Status: Peer A is online
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over NodeA: Chat Closed
         NodeA->>NodeA: Stop heartbeat timer
         NodeA->>MQTT: PUBLISH user/peerB/presence<br/>{status: "online", chatOpen: false}

@@ -20,9 +20,9 @@ This application is a **hybrid distributed system** combining:
 ```mermaid
 graph TB
     subgraph "Distributed System Components"
-        Peer1[Peer Node 1<br/>Autonomous Process]
-        Peer2[Peer Node 2<br/>Autonomous Process]
-        Broker[MQTT Broker<br/>Signaling Coordinator]
+        Peer1["Peer Node 1<br/>Autonomous Process"]
+        Peer2["Peer Node 2<br/>Autonomous Process"]
+        Broker["MQTT Broker<br/>Signaling Coordinator"]
     end
     
     Peer1 <-->|Direct P2P<br/>WebRTC| Peer2

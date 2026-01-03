@@ -12,24 +12,24 @@
 ```mermaid
 graph TB
     subgraph "Chat Application System"
-        UC1[Register/Login]
-        UC2[Add Contact]
-        UC3[Accept Contact Request]
-        UC4[Decline Contact Request]
-        UC5[Remove Contact]
-        UC6[Send Message]
-        UC7[Receive Message]
-        UC8[View Message History]
-        UC9[Establish P2P Connection]
-        UC10[Monitor Connection Status]
-        UC11[Reconnect on Failure]
-        UC12[View Contact List]
-        UC13[Search Contacts]
+        UC1["Register/Login"]
+        UC2["Add Contact"]
+        UC3["Accept Contact Request"]
+        UC4["Decline Contact Request"]
+        UC5["Remove Contact"]
+        UC6["Send Message"]
+        UC7["Receive Message"]
+        UC8["View Message History"]
+        UC9["Establish P2P Connection"]
+        UC10["Monitor Connection Status"]
+        UC11["Reconnect on Failure"]
+        UC12["View Contact List"]
+        UC13["Search Contacts"]
     end
     
-    UserA((User A))
-    UserB((User B))
-    MQTT[MQTT Broker]
+    UserA("(User A"))
+    UserB("(User B"))
+    MQTT["MQTT Broker"]
     WebRTC[WebRTC]
     
     UserA --> UC1
@@ -233,9 +233,9 @@ graph TB
 
 ```mermaid
 graph LR
-    UserA[User A] -->|uses| System[Chat System]
-    UserB[User B] -->|uses| System
-    System -->|signaling| MQTT[MQTT Broker]
+    UserA["User A"] -->|uses| System["Chat System"]
+    UserB["User B"] -->|uses| System
+    System -->|signaling| MQTT["MQTT Broker"]
     System -->|data transfer| WebRTC[WebRTC]
     
     style System fill:#4fc3f7

@@ -9,19 +9,19 @@ The P2P chat application uses a hybrid communication model combining MQTT for si
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        UI[User Interface]
-        Logic[Business Logic]
+        UI["User Interface"]
+        Logic["Business Logic"]
     end
     
     subgraph "Transport Layer"
-        MQTT[MQTT - Signaling]
-        WebRTC[WebRTC - Data Transfer]
+        MQTT["MQTT - Signaling"]
+        WebRTC["WebRTC - Data Transfer"]
     end
     
     subgraph "Network Layer"
-        Broker[MQTT Broker]
-        STUN[STUN Server]
-        TURN[TURN Server]
+        Broker["MQTT Broker"]
+        STUN["STUN Server"]
+        TURN["TURN Server"]
     end
     
     UI --> Logic
@@ -55,21 +55,21 @@ user/{userId}/                    # User's main topic
 
 ```mermaid
 graph TB
-    SignalingMsg[Signaling Message]
+    SignalingMsg["Signaling Message"]
     
     SignalingMsg --> Offer[Offer]
     SignalingMsg --> Answer[Answer]
-    SignalingMsg --> ICE[ICE Candidate]
-    SignalingMsg --> Contact[Contact Request]
-    SignalingMsg --> Response[Contact Response]
-    SignalingMsg --> Presence[Chat Presence]
+    SignalingMsg --> ICE["ICE Candidate"]
+    SignalingMsg --> Contact["Contact Request"]
+    SignalingMsg --> Response["Contact Response"]
+    SignalingMsg --> Presence["Chat Presence"]
     
-    Offer --> |contains| SDP1[SDP Description]
-    Answer --> |contains| SDP2[SDP Description]
-    ICE --> |contains| Candidate[ICE Candidate Data]
-    Contact --> |contains| PeerInfo[Peer ID & Name]
-    Response --> |contains| Accepted[Accepted/Declined]
-    Presence --> |contains| Status[Opened/Closed]
+    Offer --> |contains| SDP1["SDP Description"]
+    Answer --> |contains| SDP2["SDP Description"]
+    ICE --> |contains| Candidate["ICE Candidate Data"]
+    Contact --> |contains| PeerInfo["Peer ID & Name"]
+    Response --> |contains| Accepted["Accepted/Declined"]
+    Presence --> |contains| Status["Opened/Closed"]
 ```
 
 ### MQTT Message Flow
@@ -129,18 +129,18 @@ sequenceDiagram
 graph TB
     subgraph "Peer A"
         A_App[Application]
-        A_WebRTC[WebRTC Engine]
-        A_ICE[ICE Agent]
+        A_WebRTC["WebRTC Engine"]
+        A_ICE["ICE Agent"]
     end
     
     subgraph "Network Discovery"
-        STUN[STUN Server]
-        TURN[TURN Server]
+        STUN["STUN Server"]
+        TURN["TURN Server"]
     end
     
     subgraph "Peer B"
-        B_ICE[ICE Agent]
-        B_WebRTC[WebRTC Engine]
+        B_ICE["ICE Agent"]
+        B_WebRTC["WebRTC Engine"]
         B_App[Application]
     end
     
@@ -165,13 +165,13 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Connection Paths"
-        Direct[Direct Connection<br/>Host Candidate]
-        STUN_Path[Server Reflexive<br/>STUN Candidate]
-        TURN_Path[Relayed<br/>TURN Candidate]
+        Direct["Direct Connection<br/>Host Candidate"]
+        STUN_Path["Server Reflexive<br/>STUN Candidate"]
+        TURN_Path["Relayed<br/>TURN Candidate"]
     end
     
-    PeerA[Peer A] -.->|Best| Direct
-    Direct -.-> PeerB[Peer B]
+    PeerA["Peer A"] -.->|Best| Direct
+    Direct -.-> PeerB["Peer B"]
     
     PeerA -.->|Good| STUN_Path
     STUN_Path -.-> PeerB
@@ -236,7 +236,7 @@ sequenceDiagram
 graph TB
     subgraph "Peer A"
         A_App[Application]
-        A_DC[Data Channel]
+        A_DC["Data Channel"]
         A_SCTP[SCTP]
         A_DTLS[DTLS]
     end
@@ -248,7 +248,7 @@ graph TB
     subgraph "Peer B"
         B_DTLS[DTLS]
         B_SCTP[SCTP]
-        B_DC[Data Channel]
+        B_DC["Data Channel"]
         B_App[Application]
     end
     
@@ -295,7 +295,7 @@ sequenceDiagram
     UI_A->>App_A: User types message
     App_A->>App_A: Create message object
     App_A->>App_A: Save to local DB
-    App_A->>DC_A: send(JSON.stringify(message))
+    App_A->>DC_A: send("JSON.stringify(message"))
     DC_A->>Network: Encrypted data
     Network->>DC_B: Encrypted data
     DC_B->>App_B: onmessage event
@@ -369,14 +369,14 @@ stateDiagram-v2
 ```mermaid
 graph TB
     subgraph "Signaling Layer"
-        Broker[MQTT Broker]
+        Broker["MQTT Broker"]
     end
     
     subgraph "Data Layer"
-        A[User A]
-        B[User B]
-        C[User C]
-        D[User D]
+        A["User A"]
+        B["User B"]
+        C["User C"]
+        D["User D"]
     end
     
     A -.->|WebRTC| B
@@ -404,16 +404,16 @@ graph TB
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        Message[Plain Text Message]
+        Message["Plain Text Message"]
     end
     
     subgraph "WebRTC Security"
-        DTLS[DTLS Encryption]
-        SRTP[SRTP for Media]
+        DTLS["DTLS Encryption"]
+        SRTP["SRTP for Media"]
     end
     
     subgraph "Transport Layer"
-        TLS[TLS for MQTT]
+        TLS["TLS for MQTT"]
     end
     
     subgraph "Network Layer"
@@ -456,10 +456,10 @@ graph LR
     App[Application]
     
     subgraph "Connection Pool"
-        MQTT[MQTT Connection<br/>Shared]
-        WebRTC1[WebRTC to Peer 1]
-        WebRTC2[WebRTC to Peer 2]
-        WebRTC3[WebRTC to Peer 3]
+        MQTT["MQTT Connection<br/>Shared"]
+        WebRTC1["WebRTC to Peer 1"]
+        WebRTC2["WebRTC to Peer 2"]
+        WebRTC3["WebRTC to Peer 3"]
     end
     
     App --> MQTT
@@ -498,12 +498,12 @@ sequenceDiagram
 
 ```mermaid
 graph TB
-    Start[Connection Attempt]
-    Start --> Try[Try Connect]
+    Start["Connection Attempt"]
+    Start --> Try["Try Connect"]
     Try --> Success{Success?}
     Success -->|Yes| Connected[Connected]
     Success -->|No| Retry{Retry?}
-    Retry -->|Yes| Wait[Wait with<br/>Exponential Backoff]
+    Retry -->|Yes| Wait["Wait with<br/>Exponential Backoff"]
     Wait --> Try
     Retry -->|No| Failed[Failed]
     

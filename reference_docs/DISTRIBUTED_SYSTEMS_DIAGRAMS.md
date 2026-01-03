@@ -13,44 +13,44 @@ This document provides comprehensive visual diagrams to illustrate distributed s
 ```mermaid
 graph TB
     subgraph "Generation 1: Centralized (1990s)"
-        C1_User1[User 1] --> C1_Server[Central Server<br/>Single Point of Failure]
-        C1_User2[User 2] --> C1_Server
-        C1_User3[User 3] --> C1_Server
-        C1_Server --> C1_DB[(Database)]
+        C1_User1["User 1"] --> C1_Server["Central Server<br/>Single Point of Failure"]
+        C1_User2["User 2"] --> C1_Server
+        C1_User3["User 3"] --> C1_Server
+        C1_Server --> C1_DB["(Database)"]
         
-        C1_Problems["Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O(N^2)"]
+        C1_Problems["Problems:<br/>- Server bottleneck<br/>- Single point of failure<br/>- High latency<br/>- Privacy concerns<br/>- Scaling costs O("N^2")"]
     end
     
     subgraph "Generation 2: Federated (2000s)"
-        F1_User1[User 1] --> F1_Server1[Server A]
-        F1_User2[User 2] --> F1_Server1
-        F1_User3[User 3] --> F1_Server2[Server B]
-        F1_User4[User 4] --> F1_Server2
+        F1_User1["User 1"] --> F1_Server1["Server A"]
+        F1_User2["User 2"] --> F1_Server1
+        F1_User3["User 3"] --> F1_Server2["Server B"]
+        F1_User4["User 4"] --> F1_Server2
         
         F1_Server1 <--> F1_Server2
         
-        F1_Problems[Problems:<br/>- Still server-dependent<br/>- Complex federation<br/>- Trust issues<br/>- Moderate latency]
+        F1_Problems["Problems:<br/>- Still server-dependent<br/>- Complex federation<br/>- Trust issues<br/>- Moderate latency"]
     end
     
     subgraph "Generation 3: Pure P2P (2010s)"
-        P1_User1[User 1] <--> P1_User2[User 2]
-        P1_User1 <--> P1_User3[User 3]
+        P1_User1["User 1"] <--> P1_User2["User 2"]
+        P1_User1 <--> P1_User3["User 3"]
         P1_User2 <--> P1_User3
-        P1_User2 <--> P1_User4[User 4]
+        P1_User2 <--> P1_User4["User 4"]
         
-        P1_Problems[Problems:<br/>- NAT traversal difficult<br/>- Peer discovery complex<br/>- No guaranteed delivery<br/>- Bootstrap problem]
+        P1_Problems["Problems:<br/>- NAT traversal difficult<br/>- Peer discovery complex<br/>- No guaranteed delivery<br/>- Bootstrap problem"]
     end
     
     subgraph "Generation 4: Hybrid P2P (Our Approach - 2020s)"
-        H1_User1[User 1] <-->|Data| H1_User2[User 2]
-        H1_User1 <-->|Data| H1_User3[User 3]
+        H1_User1["User 1"] <-->|Data| H1_User2["User 2"]
+        H1_User1 <-->|Data| H1_User3["User 3"]
         H1_User2 <-->|Data| H1_User3
         
-        H1_User1 -.->|Signaling| H1_Broker[MQTT Broker<br/>Lightweight]
+        H1_User1 -.->|Signaling| H1_Broker["MQTT Broker<br/>Lightweight"]
         H1_User2 -.->|Signaling| H1_Broker
         H1_User3 -.->|Signaling| H1_Broker
         
-        H1_Benefits[Benefits:<br/>[OK] Low latency (P2P data)<br/>[OK] Reliable signaling (MQTT)<br/>[OK] NAT traversal (WebRTC)<br/>[OK] Scalable O(N)<br/>[OK] Privacy preserved]
+        H1_Benefits["Benefits:<br/>[OK"] Low latency (P2P data)<br/>[OK] Reliable signaling (MQTT)<br/>[OK] NAT traversal (WebRTC)<br/>[OK] Scalable O(N)<br/>[OK] Privacy preserved]
     end
     
     style C1_Server fill:#ef5350
@@ -72,40 +72,40 @@ graph TB
 ```mermaid
 graph TB
     subgraph "User Space - Peer A"
-        A_App[Application Layer<br/>Chat UI]
-        A_State[State Management<br/>Local Database]
-        A_Service[Service Layer<br/>Business Logic]
+        A_App["Application Layer<br/>Chat UI"]
+        A_State["State Management<br/>Local Database"]
+        A_Service["Service Layer<br/>Business Logic"]
         
         A_App --> A_State
         A_State --> A_Service
     end
     
     subgraph "Communication Layer - Peer A"
-        A_MQTT[MQTT Client<br/>Signaling]
-        A_WebRTC[WebRTC Engine<br/>P2P Data]
+        A_MQTT["MQTT Client<br/>Signaling"]
+        A_WebRTC["WebRTC Engine<br/>P2P Data"]
         
         A_Service --> A_MQTT
         A_Service --> A_WebRTC
     end
     
     subgraph "Network Infrastructure"
-        MQTT_Broker[MQTT Broker<br/>Publish-Subscribe<br/>Signaling Only]
+        MQTT_Broker["MQTT Broker<br/>Publish-Subscribe<br/>Signaling Only"]
         
-        STUN[STUN Server<br/>NAT Discovery]
-        TURN[TURN Server<br/>Relay Fallback]
+        STUN["STUN Server<br/>NAT Discovery"]
+        TURN["TURN Server<br/>Relay Fallback"]
         
-        Internet[Internet<br/>Best-Effort Network]
+        Internet["Internet<br/>Best-Effort Network"]
     end
     
     subgraph "Communication Layer - Peer B"
-        B_MQTT[MQTT Client<br/>Signaling]
-        B_WebRTC[WebRTC Engine<br/>P2P Data]
+        B_MQTT["MQTT Client<br/>Signaling"]
+        B_WebRTC["WebRTC Engine<br/>P2P Data"]
     end
     
     subgraph "User Space - Peer B"
-        B_Service[Service Layer<br/>Business Logic]
-        B_State[State Management<br/>Local Database]
-        B_App[Application Layer<br/>Chat UI]
+        B_Service["Service Layer<br/>Business Logic"]
+        B_State["State Management<br/>Local Database"]
+        B_App["Application Layer<br/>Chat UI"]
         
         B_Service --> B_State
         B_State --> B_App
@@ -169,7 +169,7 @@ sequenceDiagram
     participant B_UI as Peer B<br/>UI Layer
     participant U2 as User B<br/>(Human)
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over U1,A_State: Phase 1: Local Processing (Peer A)
         U1->>A_UI: Types message "Hello"
         A_UI->>A_UI: Validate input
@@ -179,7 +179,7 @@ sequenceDiagram
         A_UI-->>U1: Show message (sending...)
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over A_State,Network: Phase 2: Network Transmission
         A_State->>A_WebRTC: Send message
         A_WebRTC->>A_WebRTC: Serialize to JSON
@@ -193,7 +193,7 @@ sequenceDiagram
         B_WebRTC->>B_WebRTC: Deserialize JSON
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over B_WebRTC,U2: Phase 3: Remote Processing (Peer B)
         B_WebRTC->>B_State: Deliver message
         B_State->>B_State: Validate message
@@ -203,7 +203,7 @@ sequenceDiagram
         B_UI-->>U2: Display "Hello"
     end
     
-    rect rgb(255, 224, 178)
+    rect rgb("255, 224, 178")
         Note over B_State,A_State: Phase 4: Acknowledgment (Optional)
         B_WebRTC->>Network: Send ACK
         Network->>A_WebRTC: ACK received
@@ -341,33 +341,33 @@ gantt
 ```mermaid
 graph TB
     subgraph "Centralized Architecture"
-        C_Users[N Users]
-        C_Server[Central Server]
-        C_Connections[N^2 connections through server]
-        C_Bandwidth["Server Bandwidth: O(N^2)"]
-        C_Cost[Monthly Cost: $$$$$]
+        C_Users["N Users"]
+        C_Server["Central Server"]
+        C_Connections["N^2 connections through server"]
+        C_Bandwidth["Server Bandwidth: O("N^2")"]
+        C_Cost["Monthly Cost: $$$$$"]
         
         C_Users --> C_Server
         C_Server --> C_Connections
         C_Connections --> C_Bandwidth
         C_Bandwidth --> C_Cost
         
-        C_Example[Example: 1000 users<br/>= 1,000,000 message pairs<br/>= All through server<br/>= Very expensive]
+        C_Example["Example: 1000 users<br/>= 1,000,000 message pairs<br/>= All through server<br/>= Very expensive"]
     end
     
     subgraph "P2P Architecture (Our Approach)"
-        P_Users[N Users]
-        P_Broker[MQTT Broker<br/>Signaling Only]
-        P_Direct[Direct P2P Connections]
-        P_Bandwidth[Broker Bandwidth: O(N)]
-        P_Cost[Monthly Cost: $]
+        P_Users["N Users"]
+        P_Broker["MQTT Broker<br/>Signaling Only"]
+        P_Direct["Direct P2P Connections"]
+        P_Bandwidth["Broker Bandwidth: O(N)"]
+        P_Cost["Monthly Cost: $"]
         
         P_Users --> P_Broker
         P_Users --> P_Direct
         P_Broker --> P_Bandwidth
         P_Bandwidth --> P_Cost
         
-        P_Example[Example: 1000 users<br/>= 1000 signaling messages<br/>= Data via P2P (free)<br/>= Very cheap]
+        P_Example["Example: 1000 users<br/>= 1000 signaling messages<br/>= Data via P2P (free)<br/>= Very cheap"]
     end
     
     style C_Cost fill:#ef5350
@@ -395,23 +395,23 @@ graph TB
 
 ```mermaid
 graph TB
-    CAP[CAP Theorem<br/>Choose 2 of 3]
+    CAP["CAP Theorem<br/>Choose 2 of 3"]
     
-    CAP --> C[Consistency<br/>All nodes see same data]
-    CAP --> A[Availability<br/>System always responds]
-    CAP --> P[Partition Tolerance<br/>Works despite network failures]
+    CAP --> C["Consistency<br/>All nodes see same data"]
+    CAP --> A["Availability<br/>System always responds"]
+    CAP --> P["Partition Tolerance<br/>Works despite network failures"]
     
-    C --> CP[CP Systems]
+    C --> CP["CP Systems"]
     P --> CP
-    CP --> CP_Ex[Examples:<br/>- Banking systems<br/>- MQTT broker<br/>- Distributed databases]
+    CP --> CP_Ex["Examples:<br/>- Banking systems<br/>- MQTT broker<br/>- Distributed databases"]
     
-    A --> AP[AP Systems]
+    A --> AP["AP Systems"]
     P --> AP
-    AP --> AP_Ex[Examples:<br/>- DNS<br/>- Cassandra<br/>- Our P2P Chat]
+    AP --> AP_Ex["Examples:<br/>- DNS<br/>- Cassandra<br/>- Our P2P Chat"]
     
-    C --> CA[CA Systems]
+    C --> CA["CA Systems"]
     A --> CA
-    CA --> CA_Ex[Examples:<br/>- Single-server databases<br/>- Not partition-tolerant<br/>- Rare in distributed systems]
+    CA --> CA_Ex["Examples:<br/>- Single-server databases<br/>- Not partition-tolerant<br/>- Rare in distributed systems"]
     
     style AP fill:#81c784
     style CP fill:#4fc3f7
@@ -426,13 +426,13 @@ sequenceDiagram
     participant Network
     participant P2_DB as Peer 2 Database
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over P1_DB,P2_DB: Normal Operation (Consistent)
         P1_DB->>P1_DB: Messages: [A, B, C]
         P2_DB->>P2_DB: Messages: [A, B, C]
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over Network: Network Partition Occurs
         P1_DB->>P1_DB: User sends message D
         P1_DB->>P1_DB: Local DB: [A, B, C, D]
@@ -445,7 +445,7 @@ sequenceDiagram
         Note over P1_DB,P2_DB: Inconsistent State<br/>P1 has D, P2 has E<br/>But both systems AVAILABLE
     end
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over Network: Network Restored
         P1_DB->>Network: Sync message D
         Network->>P2_DB: Deliver D
@@ -456,7 +456,7 @@ sequenceDiagram
         P1_DB->>P1_DB: Merge: [A, B, C, D, E]
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over P1_DB,P2_DB: Eventually Consistent<br/>Both have: [A, B, C, D, E]
     end
 ```
@@ -480,7 +480,7 @@ sequenceDiagram
     
     Note over A,B: Scenario: Both try to connect simultaneously
     
-    rect rgb(255, 249, 196)
+    rect rgb("255, 249, 196")
         Note over A,B: Phase 1: Simultaneous Offers (Glare)
         
         par Peer A creates offer
@@ -498,7 +498,7 @@ sequenceDiagram
         end
     end
     
-    rect rgb(255, 205, 210)
+    rect rgb("255, 205, 210")
         Note over A,B: Phase 2: Glare Detected
         
         A->>A: Receive offer_B while waiting
@@ -508,7 +508,7 @@ sequenceDiagram
         B->>B: Glare detected!
     end
     
-    rect rgb(200, 230, 201)
+    rect rgb("200, 230, 201")
         Note over A,B: Phase 3: Deterministic Resolution
         
         A->>A: Compare IDs: "alice" < "bob"
@@ -526,7 +526,7 @@ sequenceDiagram
         B->>B: setRemoteDescription(answer_A)
     end
     
-    rect rgb(227, 242, 253)
+    rect rgb("227, 242, 253")
         Note over A,B: Phase 4: Connection Established
         A->>B: ICE candidates
         B->>A: ICE candidates
@@ -556,24 +556,24 @@ graph TB
         direction TB
         
         subgraph "WebRTC Security"
-            DTLS[DTLS Encryption<br/>TLS 1.2+<br/>AES-128-GCM]
-            SRTP[SRTP for Media<br/>AES encryption]
+            DTLS["DTLS Encryption<br/>TLS 1.2+<br/>AES-128-GCM"]
+            SRTP["SRTP for Media<br/>AES encryption"]
         end
         
         subgraph "MQTT Security"
-            TLS[TLS/WSS<br/>Transport encryption]
-            Auth[Authentication<br/>Username/Password]
+            TLS["TLS/WSS<br/>Transport encryption"]
+            Auth["Authentication<br/>Username/Password"]
         end
     end
     
     subgraph "Network Layer"
-        Encrypted[Encrypted Packets<br/>Unreadable by intermediaries]
+        Encrypted["Encrypted Packets<br/>Unreadable by intermediaries"]
     end
     
     subgraph "Threat Model"
-        Eavesdropper[Eavesdropper<br/>[X] Cannot read]
-        MITM[Man-in-the-Middle<br/>[X] Cannot modify]
-        Replay[Replay Attack<br/>[X] Detected by sequence numbers]
+        Eavesdropper["Eavesdropper<br/>[X"] Cannot read]
+        MITM["Man-in-the-Middle<br/>[X"] Cannot modify]
+        Replay["Replay Attack<br/>[X"] Detected by sequence numbers]
     end
     
     PlainText --> DTLS

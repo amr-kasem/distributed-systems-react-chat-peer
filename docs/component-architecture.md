@@ -5,7 +5,7 @@
 ```mermaid
 graph TB
     subgraph "Presentation Layer"
-        UI[React Components]
+        UI["React Components"]
         ChatApp[ChatApp]
         ChatArea[ChatArea]
         Sidebar[Sidebar]
@@ -30,8 +30,8 @@ graph TB
     end
     
     subgraph "Infrastructure Layer"
-        IndexedDB[(IndexedDB)]
-        MQTT[MQTT Broker]
+        IndexedDB["(IndexedDB)"]
+        MQTT["MQTT Broker"]
         WebRTC[WebRTC]
     end
     
@@ -71,8 +71,8 @@ graph TB
 #### ChatApp Component
 ```mermaid
 graph LR
-    ChatApp[ChatApp Component]
-    ChatApp --> State[Application State]
+    ChatApp["ChatApp Component"]
+    ChatApp --> State["Application State"]
     ChatApp --> Coord[ChatCoordinator]
     ChatApp --> Sidebar
     ChatApp --> ChatArea
@@ -101,20 +101,20 @@ graph LR
 #### ChatArea Component
 ```mermaid
 graph TB
-    ChatArea[ChatArea Component]
-    ChatArea --> Header[Chat Header]
-    ChatArea --> Messages[Message List]
-    ChatArea --> Input[Message Input]
+    ChatArea["ChatArea Component"]
+    ChatArea --> Header["Chat Header"]
+    ChatArea --> Messages["Message List"]
+    ChatArea --> Input["Message Input"]
     
-    Header --> Status[Connection Status]
-    Header --> ContactName[Contact Name]
+    Header --> Status["Connection Status"]
+    Header --> ContactName["Contact Name"]
     
-    Messages --> MsgItem1[Message Item]
-    Messages --> MsgItem2[Message Item]
+    Messages --> MsgItem1["Message Item"]
+    Messages --> MsgItem2["Message Item"]
     Messages --> MsgItemN[...]
     
-    Input --> TextArea[Text Area]
-    Input --> SendBtn[Send Button]
+    Input --> TextArea["Text Area"]
+    Input --> SendBtn["Send Button"]
 ```
 
 **Responsibilities:**
@@ -127,19 +127,19 @@ graph TB
 #### Sidebar Component
 ```mermaid
 graph TB
-    Sidebar[Sidebar Component]
-    Sidebar --> UserInfo[User Info]
-    Sidebar --> ContactList[Contact List]
-    Sidebar --> AddBtn[Add Contact Button]
+    Sidebar["Sidebar Component"]
+    Sidebar --> UserInfo["User Info"]
+    Sidebar --> ContactList["Contact List"]
+    Sidebar --> AddBtn["Add Contact Button"]
     
-    ContactList --> Contact1[Contact Item]
-    ContactList --> Contact2[Contact Item]
+    ContactList --> Contact1["Contact Item"]
+    ContactList --> Contact2["Contact Item"]
     ContactList --> ContactN[...]
     
     Contact1 --> Avatar[Avatar]
     Contact1 --> Name[Name]
-    Contact1 --> Status[Status Indicator]
-    Contact1 --> LastMsg[Last Message]
+    Contact1 --> Status["Status Indicator"]
+    Contact1 --> LastMsg["Last Message"]
 ```
 
 **Responsibilities:**
@@ -174,7 +174,7 @@ graph TB
     Coordinator --> MsgRepo
     Coordinator --> ContactRepo
     
-    Coordinator --> |Events| UI[UI Components]
+    Coordinator --> |Events| UI["UI Components"]
     
     style Coordinator fill:#4fc3f7
 ```
@@ -205,10 +205,10 @@ graph TB
     MQTT --> Disconnect[disconnect]
     MQTT --> Send[sendSignalingMessage]
     MQTT --> Listen[onSignalingMessage]
-    MQTT --> Queue[Message Queue]
+    MQTT --> Queue["Message Queue"]
     MQTT --> Reconnect[ReconnectionManager]
     
-    Connect --> Broker[MQTT Broker]
+    Connect --> Broker["MQTT Broker"]
     Send --> Broker
     Broker --> Listen
     
@@ -237,8 +237,8 @@ graph TB
     WebRTC[WebRTCService]
     
     WebRTC --> PC[RTCPeerConnection]
-    WebRTC --> DC[Data Channel]
-    WebRTC --> ICE[ICE Handling]
+    WebRTC --> DC["Data Channel"]
+    WebRTC --> ICE["ICE Handling"]
     
     PC --> Offer[createOffer]
     PC --> Answer[createAnswer]
@@ -271,15 +271,15 @@ graph TB
     ConnMgr[ConnectionManager]
     
     ConnMgr --> Connect[connectToPeer]
-    ConnMgr --> Monitor[Connection Monitoring]
-    ConnMgr --> Reconnect[Reconnection Logic]
-    ConnMgr --> Presence[Presence Management]
-    ConnMgr --> Health[Health Check]
+    ConnMgr --> Monitor["Connection Monitoring"]
+    ConnMgr --> Reconnect["Reconnection Logic"]
+    ConnMgr --> Presence["Presence Management"]
+    ConnMgr --> Health["Health Check"]
     
-    Monitor --> State[State Change Handler]
-    Reconnect --> Retry[Retry Manager]
-    Presence --> Heartbeat[Heartbeat Timer]
-    Health --> Check[Health Check Timer]
+    Monitor --> State["State Change Handler"]
+    Reconnect --> Retry["Retry Manager"]
+    Presence --> Heartbeat["Heartbeat Timer"]
+    Health --> Check["Health Check Timer"]
     
     State --> |failed| Reconnect
     Retry --> |attempt| Connect
@@ -304,9 +304,9 @@ graph TB
     
     MsgSvc --> Send[sendMessage]
     MsgSvc --> Receive[onMessageReceived]
-    MsgSvc --> Persist[Message Persistence]
-    MsgSvc --> Pending[Pending Queue]
-    MsgSvc --> Status[Status Updates]
+    MsgSvc --> Persist["Message Persistence"]
+    MsgSvc --> Pending["Pending Queue"]
+    MsgSvc --> Status["Status Updates"]
     
     Send --> WebRTC[WebRTCService]
     Send --> Persist
@@ -333,7 +333,7 @@ graph TB
     ContactSvc --> Accept[acceptContact]
     ContactSvc --> Decline[declineContact]
     ContactSvc --> Remove[removeContact]
-    ContactSvc --> Request[Contact Requests]
+    ContactSvc --> Request["Contact Requests"]
     
     Add --> MQTT[MQTTService]
     Accept --> MQTT
@@ -362,12 +362,12 @@ graph TB
     MsgRepo --> Update[updateMessageStatus]
     MsgRepo --> Pending[getPendingMessages]
     
-    Save --> DB[(IndexedDB)]
+    Save --> DB["(IndexedDB)"]
     Get --> DB
     Update --> DB
     Pending --> DB
     
-    DB --> Store[messages Store]
+    DB --> Store["messages Store"]
 ```
 
 **Schema:**
@@ -394,13 +394,13 @@ graph TB
     ContactRepo --> Update[update]
     ContactRepo --> Delete[softDelete]
     
-    GetAll --> DB[(IndexedDB)]
+    GetAll --> DB["(IndexedDB)"]
     Get --> DB
     Add --> DB
     Update --> DB
     Delete --> DB
     
-    DB --> Store[contacts Store]
+    DB --> Store["contacts Store"]
 ```
 
 **Schema:**
@@ -420,10 +420,10 @@ interface Contact {
 ### Message Send Flow
 ```mermaid
 graph LR
-    UI[UI Component] -->|sendMessage| Coord[ChatCoordinator]
+    UI["UI Component"] -->|sendMessage| Coord[ChatCoordinator]
     Coord -->|sendMessage| MsgSvc[MessagingService]
     MsgSvc -->|saveMessage| MsgRepo[MessageRepository]
-    MsgRepo -->|store| DB[(IndexedDB)]
+    MsgRepo -->|store| DB["(IndexedDB)"]
     MsgSvc -->|sendMessage| WebRTC[WebRTCService]
     WebRTC -->|data channel| Peer[Peer]
     
@@ -435,13 +435,13 @@ graph LR
 ### Connection Establishment Flow
 ```mermaid
 graph LR
-    UI[UI Component] -->|selectContact| Coord[ChatCoordinator]
+    UI["UI Component"] -->|selectContact| Coord[ChatCoordinator]
     Coord -->|connectToPeer| ConnMgr[ConnectionManager]
     ConnMgr -->|createOffer| WebRTC[WebRTCService]
     WebRTC -->|SDP| ConnMgr
     ConnMgr -->|sendSignalingMessage| MQTT[MQTTService]
-    MQTT -->|publish| Broker[MQTT Broker]
-    Broker -->|forward| PeerMQTT[Peer MQTT]
+    MQTT -->|publish| Broker["MQTT Broker"]
+    Broker -->|forward| PeerMQTT["Peer MQTT"]
     
     style UI fill:#e1f5ff
     style Coord fill:#4fc3f7

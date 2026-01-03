@@ -11,21 +11,21 @@ This document compares the React and Flutter implementations of the P2P chat app
 ```mermaid
 graph TB
     subgraph "React Implementation"
-        React_UI[React Components]
-        React_State[React State]
-        React_Services[TypeScript Services]
+        React_UI["React Components"]
+        React_State["React State"]
+        React_Services["TypeScript Services"]
         React_DB[IndexedDB]
     end
     
     subgraph "Flutter Implementation"
-        Flutter_UI[Flutter Widgets]
-        Flutter_State[Riverpod Providers]
-        Flutter_Services[Dart Services]
-        Flutter_DB[Drift/SQLite]
+        Flutter_UI["Flutter Widgets"]
+        Flutter_State["Riverpod Providers"]
+        Flutter_Services["Dart Services"]
+        Flutter_DB["Drift/SQLite"]
     end
     
     subgraph "Shared Infrastructure"
-        MQTT[MQTT Broker]
+        MQTT["MQTT Broker"]
         WebRTC[WebRTC]
     end
     
@@ -71,11 +71,11 @@ graph TB
 ```mermaid
 graph TB
     subgraph "React Technology Stack"
-        React[React 19.2.0]
-        TS[TypeScript 5.9.3]
-        Vite[Vite 7.2.4]
-        MQTT_R[mqtt 5.14.1]
-        WebRTC_R[Native WebRTC]
+        React["React 19.2.0"]
+        TS["TypeScript 5.9.3"]
+        Vite["Vite 7.2.4"]
+        MQTT_R["mqtt 5.14.1"]
+        WebRTC_R["Native WebRTC"]
         IDB[IndexedDB]
         ESLint[ESLint]
     end
@@ -95,14 +95,14 @@ graph TB
 ```mermaid
 graph TB
     subgraph "Flutter Technology Stack"
-        Flutter[Flutter SDK]
-        Dart[Dart 3.10.1+]
-        Riverpod[Riverpod 2.4.9]
-        Drift[Drift 2.14.0]
-        MQTT_F[mqtt_client 10.2.0]
-        WebRTC_F[flutter_webrtc 0.9.48]
+        Flutter["Flutter SDK"]
+        Dart["Dart 3.10.1+"]
+        Riverpod["Riverpod 2.4.9"]
+        Drift["Drift 2.14.0"]
+        MQTT_F["mqtt_client 10.2.0"]
+        WebRTC_F["flutter_webrtc 0.9.48"]
         BuildRunner[build_runner]
-        Freezed[Freezed 2.4.6]
+        Freezed["Freezed 2.4.6"]
     end
     
     Flutter --> Dart

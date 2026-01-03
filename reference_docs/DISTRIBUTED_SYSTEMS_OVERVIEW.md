@@ -23,20 +23,20 @@ A distributed system is a collection of independent computers that appears to it
 ```mermaid
 graph TB
     subgraph "Traditional Client-Server (NOT our approach)"
-        C1[Client 1] --> Server[Central Server]
-        C2[Client 2] --> Server
-        C3[Client 3] --> Server
+        C1["Client 1"] --> Server["Central Server"]
+        C2["Client 2"] --> Server
+        C3["Client 3"] --> Server
         Server --> C1
         Server --> C2
         Server --> C3
     end
     
     subgraph "P2P Architecture (Our Approach)"
-        P1[Peer 1] <-->|Direct Connection| P2[Peer 2]
-        P1 <-->|Direct Connection| P3[Peer 3]
+        P1["Peer 1"] <-->|Direct Connection| P2["Peer 2"]
+        P1 <-->|Direct Connection| P3["Peer 3"]
         P2 <-->|Direct Connection| P3
         
-        P1 -.->|Signaling Only| Broker[MQTT Broker]
+        P1 -.->|Signaling Only| Broker["MQTT Broker"]
         P2 -.->|Signaling Only| Broker
         P3 -.->|Signaling Only| Broker
     end
@@ -91,18 +91,18 @@ sequenceDiagram
 ```mermaid
 graph LR
     subgraph "Home Network A"
-        P1[Peer 1<br/>192.168.1.10]
+        P1["Peer 1<br/>192.168.1.10"]
     end
     
     subgraph "Internet"
-        NAT_A[NAT Router A<br/>Public IP: 203.0.113.1]
-        NAT_B[NAT Router B<br/>Public IP: 198.51.100.1]
-        STUN[STUN Server]
-        TURN[TURN Server]
+        NAT_A["NAT Router A<br/>Public IP: 203.0.113.1"]
+        NAT_B["NAT Router B<br/>Public IP: 198.51.100.1"]
+        STUN["STUN Server"]
+        TURN["TURN Server"]
     end
     
     subgraph "Home Network B"
-        P2[Peer 2<br/>192.168.1.20]
+        P2["Peer 2<br/>192.168.1.20"]
     end
     
     P1 --> NAT_A
@@ -202,17 +202,17 @@ sequenceDiagram
 
 ```mermaid
 graph TB
-    Start[Connection Attempt]
-    Start --> Try[Try Connect]
+    Start["Connection Attempt"]
+    Start --> Try["Try Connect"]
     Try --> Success{Success?}
     Success -->|Yes| Connected[Connected]
     Success -->|No| Retry{Retry?}
-    Retry -->|Yes| Wait[Wait with<br/>Exponential Backoff]
-    Wait --> Delay1[Delay: 1s]
-    Delay1 --> Delay2[Delay: 2s]
-    Delay2 --> Delay4[Delay: 4s]
-    Delay4 --> Delay8[Delay: 8s]
-    Delay8 --> Delay16[Delay: 16s]
+    Retry -->|Yes| Wait["Wait with<br/>Exponential Backoff"]
+    Wait --> Delay1["Delay: 1s"]
+    Delay1 --> Delay2["Delay: 2s"]
+    Delay2 --> Delay4["Delay: 4s"]
+    Delay4 --> Delay8["Delay: 8s"]
+    Delay8 --> Delay16["Delay: 16s"]
     Delay16 --> Try
     Retry -->|Max retries| Failed[Failed]
     
@@ -235,23 +235,23 @@ graph TB
 ```mermaid
 graph TB
     subgraph "WebRTC Stack"
-        App[Application Layer]
+        App["Application Layer"]
         
         subgraph "WebRTC APIs"
-            PC[PeerConnection API]
-            DC[DataChannel API]
-            Media[MediaStream API]
+            PC["PeerConnection API"]
+            DC["DataChannel API"]
+            Media["MediaStream API"]
         end
         
         subgraph "Session Management"
-            SDP[SDP - Session Description]
-            ICE[ICE - Connectivity]
+            SDP["SDP - Session Description"]
+            ICE["ICE - Connectivity"]
         end
         
         subgraph "Transport Layer"
-            DTLS[DTLS - Security]
-            SCTP[SCTP - Data]
-            SRTP[SRTP - Media]
+            DTLS["DTLS - Security"]
+            SCTP["SCTP - Data"]
+            SRTP["SRTP - Media"]
         end
         
         subgraph "Network Layer"
@@ -342,12 +342,12 @@ sequenceDiagram
 ```mermaid
 graph TB
     subgraph "MQTT Publish-Subscribe Pattern"
-        P1[Publisher 1]
-        P2[Publisher 2]
-        Broker[MQTT Broker]
-        S1[Subscriber 1]
-        S2[Subscriber 2]
-        S3[Subscriber 3]
+        P1["Publisher 1"]
+        P2["Publisher 2"]
+        Broker["MQTT Broker"]
+        S1["Subscriber 1"]
+        S2["Subscriber 2"]
+        S3["Subscriber 3"]
         
         P1 -->|PUBLISH topic/A| Broker
         P2 -->|PUBLISH topic/B| Broker
@@ -397,7 +397,7 @@ graph LR
     subgraph "QoS 0: At most once"
         P0[Publisher] -->|Send once| B0[Broker]
         B0 -->|Deliver once| S0[Subscriber]
-        Note0[No acknowledgment<br/>Fire and forget]
+        Note0["No acknowledgment<br/>Fire and forget"]
     end
     
     subgraph "QoS 1: At least once (Our choice)"
@@ -405,13 +405,13 @@ graph LR
         B1 -->|ACK| P1
         B1 -->|Deliver| S1[Subscriber]
         S1 -->|ACK| B1
-        Note1[Guaranteed delivery<br/>May duplicate]
+        Note1["Guaranteed delivery<br/>May duplicate"]
     end
     
     subgraph "QoS 2: Exactly once"
         P2[Publisher] <-->|4-way handshake| B2[Broker]
         B2 <-->|4-way handshake| S2[Subscriber]
-        Note2[No duplicates<br/>Higher overhead]
+        Note2["No duplicates<br/>Higher overhead"]
     end
     
     style B1 fill:#ffb74d
@@ -442,20 +442,20 @@ graph LR
 ```mermaid
 graph TB
     subgraph "MQTT: Broker-based Messaging"
-        M_P1[Peer 1] -->|Publish| M_Broker[MQTT Broker]
-        M_Broker -->|Subscribe| M_P2[Peer 2]
+        M_P1["Peer 1"] -->|Publish| M_Broker["MQTT Broker"]
+        M_Broker -->|Subscribe| M_P2["Peer 2"]
         M_P2 -->|Publish| M_Broker
         M_Broker -->|Subscribe| M_P1
         
-        Note_M[All messages through broker<br/>Centralized routing]
+        Note_M["All messages through broker<br/>Centralized routing"]
     end
     
     subgraph "WebRTC: Direct P2P"
-        W_P1[Peer 1] <-->|Direct Connection| W_P2[Peer 2]
-        W_P1 -.->|Signaling only| W_Signal[Signaling Server]
+        W_P1["Peer 1"] <-->|Direct Connection| W_P2["Peer 2"]
+        W_P1 -.->|Signaling only| W_Signal["Signaling Server"]
         W_P2 -.->|Signaling only| W_Signal
         
-        Note_W[Data bypasses server<br/>Decentralized transfer]
+        Note_W["Data bypasses server<br/>Decentralized transfer"]
     end
     
     style M_Broker fill:#ffb74d
@@ -482,18 +482,18 @@ graph TB
 ```mermaid
 graph TB
     subgraph "Hybrid Architecture: Best of Both Worlds"
-        Setup[Connection Setup]
-        Data[Data Transfer]
+        Setup["Connection Setup"]
+        Data["Data Transfer"]
         
-        Setup -->|Use MQTT| Signaling[Signaling Phase]
-        Signaling --> Discover[Peer Discovery]
-        Signaling --> Negotiate[Connection Negotiation]
-        Signaling --> Exchange[SDP/ICE Exchange]
+        Setup -->|Use MQTT| Signaling["Signaling Phase"]
+        Signaling --> Discover["Peer Discovery"]
+        Signaling --> Negotiate["Connection Negotiation"]
+        Signaling --> Exchange["SDP/ICE Exchange"]
         
-        Data -->|Use WebRTC| Transfer[Transfer Phase]
-        Transfer --> Messages[Chat Messages]
-        Transfer --> Files[File Transfer]
-        Transfer --> Media[Audio/Video]
+        Data -->|Use WebRTC| Transfer["Transfer Phase"]
+        Transfer --> Messages["Chat Messages"]
+        Transfer --> Files["File Transfer"]
+        Transfer --> Media["Audio/Video"]
     end
     
     style Signaling fill:#ffb74d
@@ -520,17 +520,17 @@ The **CAP Theorem** states you can only have 2 of 3:
 
 ```mermaid
 graph TB
-    CAP[CAP Theorem]
+    CAP["CAP Theorem"]
     
-    CAP --> AP[Availability + Partition Tolerance]
-    CAP --> CP[Consistency + Partition Tolerance]
-    CAP --> CA[Consistency + Availability]
+    CAP --> AP["Availability + Partition Tolerance"]
+    CAP --> CP["Consistency + Partition Tolerance"]
+    CAP --> CA["Consistency + Availability"]
     
-    AP --> OurChoice[Our Choice: AP]
+    AP --> OurChoice["Our Choice: AP"]
     
-    OurChoice --> Reason1[Each peer has local database]
-    OurChoice --> Reason2[System works during network partitions]
-    OurChoice --> Reason3[Eventually consistent when reconnected]
+    OurChoice --> Reason1["Each peer has local database"]
+    OurChoice --> Reason2["System works during network partitions"]
+    OurChoice --> Reason3["Eventually consistent when reconnected"]
     
     style OurChoice fill:#81c784
     style CA fill:#ef5350
@@ -586,20 +586,20 @@ Our system handles:
 
 ```mermaid
 graph TB
-    Failures[Failure Types]
+    Failures["Failure Types"]
     
-    Failures --> Crash[Crash Failure]
-    Failures --> Network[Network Failure]
-    Failures --> Byzantine[Byzantine Failure]
+    Failures --> Crash["Crash Failure"]
+    Failures --> Network["Network Failure"]
+    Failures --> Byzantine["Byzantine Failure"]
     
-    Crash --> Detect1[Detection: Heartbeat timeout]
-    Crash --> Recover1[Recovery: Reconnect]
+    Crash --> Detect1["Detection: Heartbeat timeout"]
+    Crash --> Recover1["Recovery: Reconnect"]
     
-    Network --> Detect2[Detection: Connection state]
-    Network --> Recover2[Recovery: Retry with backoff]
+    Network --> Detect2["Detection: Connection state"]
+    Network --> Recover2["Recovery: Retry with backoff"]
     
-    Byzantine --> Detect3[Detection: Message validation]
-    Byzantine --> Recover3[Recovery: Reject invalid messages]
+    Byzantine --> Detect3["Detection: Message validation"]
+    Byzantine --> Recover3["Recovery: Reject invalid messages"]
     
     style Crash fill:#ff9800
     style Network fill:#ff9800
@@ -616,28 +616,28 @@ graph TB
 graph TB
     Requirements[Requirements]
     
-    Requirements --> R1[Low Latency]
+    Requirements --> R1["Low Latency"]
     Requirements --> R2[Privacy]
     Requirements --> R3[Scalability]
     Requirements --> R4[Reliability]
-    Requirements --> R5[Cost Efficiency]
+    Requirements --> R5["Cost Efficiency"]
     
-    R1 --> D1[WebRTC P2P]
+    R1 --> D1["WebRTC P2P"]
     R2 --> D1
     R5 --> D1
     
-    R3 --> D2[MQTT Signaling]
+    R3 --> D2["MQTT Signaling"]
     R4 --> D2
     
-    D1 --> Hybrid[Hybrid Architecture]
+    D1 --> Hybrid["Hybrid Architecture"]
     D2 --> Hybrid
     
     Hybrid --> Benefits[Benefits]
     
-    Benefits --> B1[Direct peer communication]
-    Benefits --> B2[No server data costs]
-    Benefits --> B3[Reliable signaling]
-    Benefits --> B4[Works behind NAT]
+    Benefits --> B1["Direct peer communication"]
+    Benefits --> B2["No server data costs"]
+    Benefits --> B3["Reliable signaling"]
+    Benefits --> B4["Works behind NAT"]
     
     style Hybrid fill:#81c784
 ```
@@ -656,19 +656,19 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Client-Server Scaling"
-        CS_Users[N Users]
-        CS_Server["Server Load: O(N^2)"]
-        CS_Cost["Cost: O(N^2)"]
+        CS_Users["N Users"]
+        CS_Server["Server Load: O("N^2")"]
+        CS_Cost["Cost: O("N^2")"]
         
         CS_Users --> CS_Server
         CS_Server --> CS_Cost
     end
     
     subgraph "P2P Scaling (Our Approach)"
-        P2P_Users[N Users]
-        P2P_Broker[Broker Load: O(N)]
-        P2P_Cost[Cost: O(N)]
-        P2P_Direct[Direct P2P: O(1) per connection]
+        P2P_Users["N Users"]
+        P2P_Broker["Broker Load: O(N)"]
+        P2P_Cost["Cost: O(N)"]
+        P2P_Direct["Direct P2P: O(1) per connection"]
         
         P2P_Users --> P2P_Broker
         P2P_Broker --> P2P_Cost
@@ -699,7 +699,7 @@ graph LR
 
 ```mermaid
 mindmap
-  root((Distributed<br/>Systems<br/>Lessons))
+  root("(Distributed<br/>Systems<br/>Lessons"))
     Protocol Selection
       MQTT for reliability
       WebRTC for performance
